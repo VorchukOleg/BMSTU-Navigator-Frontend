@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<div class="FirstFloorPlan">
+	<img src="FirstFloorPlan.png" alt="" style="position: absolute;" />
+	<svg>
+        <polygon data-id="1" points="223,1441 269,1431 329,1435 329,1341"></polygon>
+        <polygon data-id="2" points="273,1436 325,1432 329,1340 513,1339 513,1456 496,1474 459,1450 355,1561 392,1596 372,1631"></polygon>
+        <polygon data-id="3" points="458,1452 516,1506 513,1557 481,1601 415,1603"></polygon>
+        <polygon data-id="4" points="322,1995 432,1976 459,2144"></polygon>
+        <polygon data-id="5" points="345,2170 430,2158 441,2210 427,2226"></polygon>
+        <polygon data-id="6" points="359,2239 434,2227 447,2277"></polygon>
+        <polygon data-id="7" points="465,2142 549,2151 538,2272 451,2260"></polygon>
+        <polygon data-id="8" points="398,2471 503,2448 546,2656"></polygon>
+        <polygon data-id="9" points="435,2682 549,2658 586,2877"></polygon>
+        <polygon data-id="10" points="474,2905 585,2883 625,3103"></polygon>
+        <polygon data-id="11" points="593,2892 949,2797 1220,2650 1198,2622 1257,2576 1278,2612 1482,2420 1583,2277 1642,2172 1621,2158 1651,2094 1675,2108 1749,1927 1973,1925 1849,2245 1657,2539 1414,2777 1127,2954 868,3050"></polygon>
+        <polygon data-id="12" points="640,2658 670,2865 866,2817 861,2803 895,2792 900,2810 1124,2703 1116,2687 1150,2672 1152,2691 1215,2648 1085,2479"></polygon>
+        <polygon data-id="13" points="1076,2452 1109,2500 1166,2460"></polygon>
+        <polygon data-id="14" points="1112,2505 1171,2464 1256,2576"></polygon>
+        <polygon data-id="15" points="1149,2429 1187,2403 1326,2564"></polygon>
+        <polygon data-id="16" points="1268,2494 1331,2445 1380,2389 1450,2446 1390,2505"></polygon>
+        <polygon data-id="17" points="1188,2401 1268,2495 1380,2387 1450,2445 1544,2327 1374,2196"></polygon>
+        <polygon data-id="18" points="1375,2199 1548,2325 1640,2172"></polygon>
+        <polygon data-id="19" points="1487,2096 1517,2024 1650,2091"></polygon>
+        <polygon data-id="20" points="1519,2026 1456,1994 1422,2066"></polygon>
+        <polygon data-id="21" points="1488,2008 1675,2103 1747,1923 1804,1922 1799,1617 1586,1616"></polygon>
+        <polygon data-id="22" points="1583,1610 1802,1616 1801,1532"></polygon>
+        <polygon data-id="23" points="1629,1527 1758,1530 1760,1452"></polygon>
+        <polygon data-id="24" points="1288,1450 1798,1448 1799,1199"></polygon>
+        <polygon data-id="25" points="702,1332 1208,1326 1207,1203"></polygon>
+        <polygon data-id="26" points="870,1333 870,1450 1047,1448"></polygon>
+        <polygon data-id="27" points="1046,1417 1155,1417 1169,1451 1209,1449 1208,1334"></polygon>
+        <polygon data-id="28" points="1050,1417 1157,1417 1184,1501 1067,1535"></polygon>
+        <polygon data-id="29" points="1210,1449 1288,1447 1289,1200"></polygon>
+
+
+	</svg>
+
+	<div class="FirstFloorPlan-item" data-id="2" style="top: 60px; left: 150px;">
+		<div class="FirstFloorPlan-name">104</div>
+		<div class="FirstFloorPlan-popup">
+			Сеть магазинов «Детский мир» - крупнейший розничный оператор торговли
+			детскими товарами и лидер рынка.
+		</div>
+	</div>
+
+	<div class="FirstFloorPlan-item" data-id="3" style="top: 60px; left: 170px;">
+		<div class="FirstFloorPlan-name">106</div>
+		<div class="FirstFloorPlan-popup">
+			Спортивный бренд Arena (Арена) известен во всем мире как
+			производитель товаров для плавания.
+		</div>
+	</div>
+
+</div>
+<style type="text/css">
+/* Полигоны магазинов */
+.FirstFloorPlan {
+	height: 413px;
+	width: 1000px;
+	margin: 0 auto;
+	position: fixed;
+}
+.FirstFloorPlan svg {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	height: 413px;
+	width: 1000px;
+}
+.FirstFloorPlan polygon {
+	fill: #FFDBA4;
+	cursor: pointer;
+}
+
+/* Цвета магазинов - при наведении мышкой и активный */
+.FirstFloorPlan polygon:hover, #hover {
+	fill: #ffc70b;
+}
+.FirstFloorPlan polygon.active {
+	fill: #FF8C0B !important;
+}
+
+/* Названия и подсказки магазинов */
+.FirstFloorPlan-item {
+	position: absolute;
+	cursor: pointer;
+}
+.FirstFloorPlan-name {
+	font-weight: bold;
+	font-size: 10px;
+	text-align: center;
+	line-height: 13px;
+}
+.FirstFloorPlan-popup {
+	display: none;
+	border: 1px solid #777;
+	padding: 10px;
+	width: 300px;
+	position: absolute;
+	font-size: 12px;
+	line-height: 14px;
+	background: #fff;
+	z-index: 9999;
+	box-shadow: 0 0 10px rgba(0,0,0,0.5);
+	text-align: left;
+}
+</style>
+
+<script src="https://snipp.ru/cdn/jquery/2.1.1/jquery.min.js"></script>
+<script>
+// Изменение цвета polygon когда мышка над названием магазина.
+$('.FirstFloorPlan-item').hover(
+	function(){
+		$('.FirstFloorPlan polygon[data-id=' + $(this).data('id') + ']').attr('id', 'hover');
+	},
+	function(){
+		$('.FirstFloorPlan polygon[data-id=' + $(this).data('id') + ']').attr('id', '');
+	}
+);
+
+// Клик по названию магазина - открывается подсказка.
+$('.FirstFloorPlan-item').on('click', function(){
+	$('.FirstFloorPlan-popup').hide();
+	$('.FirstFloorPlan polygon').attr('class', '');
+
+	var popup = $(this).find('.FirstFloorPlan-popup');
+	$(popup).css('top', '-' + ($(popup).outerHeight(true) + 15) + 'px');
+	$(popup).css('left', '-' + (($(popup).outerWidth(true) / 2) - ($(this).outerWidth(true) / 2)) + 'px');
+	$('.FirstFloorPlan polygon[data-id=' + $(this).data('id') + ']').attr('class', 'active');
+	$(popup).show();
+});
+
+// Клик по полигону магазина - также открывается подсказка.
+$('.FirstFloorPlan polygon').click(function(){
+	$('.FirstFloorPlan-popup').hide();
+	$('.FirstFloorPlan-item[data-id=' + $(this).data('id') + ']').trigger('click');
+});
+
+// Клик вне магазинов все закрывает.
+$("body").click(function(e) {
+	if ($(e.target).closest(".FirstFloorPlan polygon, .FirstFloorPlan-item").length == 0) {
+		$(".FirstFloorPlan-popup").hide();
+		$('.FirstFloorPlan polygon').attr('class', '');
+	}
+});
+</script>
