@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Навигатор</title>
+    <style>
+        .scheme {
+            height: 360px;
+            width: 900px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .scheme svg {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            height: 360px;
+            width: 900px;
+        }
+
+        .scheme polygon {
+            fill: #FFDBA4;
+            cursor: pointer;
+            stroke: #4682B4;
+            fill: #ADD8E6;
+        }
+
+        .isSelectedAud {
+            fill: rgb(141, 31, 99) !important;
+        }
+
+        .isSelectedHall {
+            fill: rgb(0, 55, 255) !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="scheme">
+        <svg id="svg">
+            {{#each rooms}}
+                <polygon class="" id="{{this.id}}" points="{{this.coordinates}}"></polygon>
+            {{/each}}
+        </svg>
+    </div>
+</body>
+</html>
