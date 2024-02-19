@@ -8,7 +8,6 @@
         .scheme {
             height: 360px;
             width: 900px;
-            margin: 0 auto;
             position: relative;
         }
 
@@ -34,15 +33,82 @@
         .isSelectedHall {
             fill: rgb(0, 55, 255) !important;
         }
+
+        .floor_button_panels { 
+            text-align: center;
+        }
+
+        .navigation_panel_wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .navigation_panel_wrapper__selectors {
+            display: flex;
+            margin-top: 20px;
+            column-gap: 15px;
+        }
+
+        .navigation_panel_wrapper button, .floor_button_panels button {
+            margin-top: 20px;
+            padding: 15px;
+            border: none;
+            border-radius: 6px;
+            text-decoration: none;
+            color: white;
+            background: #0B63F6;
+            cursor: pointer;
+        }
     </style>
+
+    
 </head>
 <body>
+    <div class="floor_button_panels">
+        <button class="btn" value="100">100</button>
+        <button class="btn" value="200">200</button>
+        <button class="btn" value="300">300</button>
+    </div>
+
+    <div class="navigation_panel_wrapper">
+        <div class="navigation_panel_wrapper__selectors">
+            <div>
+                <span>Откуда</span>
+                <select id="select-from">
+                    <option value="53">С101</option>
+                    <option value="58">С102</option>
+                    <option value="55">С103</option>
+                    <option value="57">С104</option>
+                    <option value="56">С105</option>
+                    <option value="54">С106</option>
+                    <option value="52">С107</option>
+                    <option value="51">С108</option>
+                </select>
+            </div>
+            <div>
+                <span>Куда</span>
+                <select id="select-to">
+                    <option value="53">С101</option>
+                    <option value="58">С102</option>
+                    <option value="55">С103</option>
+                    <option value="57">С104</option>
+                    <option value="56">С105</option>
+                    <option value="54">С106</option>
+                    <option value="52">С107</option>
+                    <option value="51">С108</option>
+                </select>
+            </div>            
+        </div>
+       <button id="search_path">Найти</button>
+    </div>
+
     <div class="scheme">
         <svg id="svg">
-            {{#each rooms}}
-                <polygon class="" id="{{this.id}}" points="{{this.coordinates}}"></polygon>
-            {{/each}}
+            <g id="floor"/>
         </svg>
     </div>
+    <script async src="script.js"></script>
 </body>
 </html>
