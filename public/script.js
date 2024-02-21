@@ -1,4 +1,4 @@
-const link = 'http://127.0.0.1:5001';
+const link = 'http://127.0.0.1:5000';
 
 class State {
     constructor() {
@@ -18,6 +18,8 @@ const state = new State();
 
 const SVG = document.getElementById('svg');
 
+
+
 const selectFrom = document.getElementById('select-from');
 const selectTo = document.getElementById('select-to');
 
@@ -29,8 +31,14 @@ async function handleSearch(e) {
 
     path.path.forEach((id) => {
         const el = document.getElementById(`bp_id_${id}`);
-        el.setAttribute('class', 'isSelectedAud');
+        el.setAttribute('class', 'isSelectedHall');
     })
+    const from = path.from;
+    const to = path.to; 
+    const departure = document.getElementById(`r_id_${from}`);
+    const destination = document.getElementById(`r_id_${to}`);
+    departure.setAttribute('class', 'isSelectedAud');
+    destination.setAttribute('class', 'isSelectedAud');
 
 }
 
@@ -47,29 +55,42 @@ async function getPath(from, to) {
       }
 }
 
+function removeOptions(selectElement) {
+    var i, L = selectElement.options.length - 1;
+    for(i = L; i >= 0; i--) {
+       selectElement.remove(i);
+    }
+ }
+
+
 async function requestDataByFloor(floorId) {
     console.log(`request data for ${floorId}`);
-    let response = await fetch(`${link}/base_nodes/get_base_point?id=${floorId}`);
+    let response = await fetch(`${link}/floors/get_all?floor_id=${floorId}`);
+    
     if (response.ok) { 
         let json = await response.json();
-        const polygonCoordinates = Object.values(json).map((p) => {
-          const keys = Object.keys(p.coordinates);
-              
-          const coord = keys.map((key) => {
-              return [p.coordinates[key].x, p.coordinates[key].y];
-          });
-  
-          return {
-              id: `bp_id_${p.id}`,
-              coordinates: coord
-          };
-        });
 
-        return polygonCoordinates;
-      } else {
+        let basenodesJson = json.basenode;
+        let roomsJson = json.rooms;
+
+        const basenodesPolygonCoordinates = processPolygonCoordinates(basenodesJson, 'bp_id_');
+        const roomPolygonCoordinates = processPolygonCoordinates(roomsJson, 'r_id_');
+
+        return {
+            "coordinates" : [...roomPolygonCoordinates, ...basenodesPolygonCoordinates],
+            "select" : roomsJson
+        };
+    } else {
         alert("Ошибка HTTP: " + response.status);
-      }
+    } 
 }
+
+const processPolygonCoordinates = (data, idPrefix) => 
+    Object.values(data).map(p => {
+        const coord = Object.keys(p.coordinates).map(key => [p.coordinates[key].x, p.coordinates[key].y]);
+        return { id: `${idPrefix}${p.id}`, coordinates: coord };
+    });
+
 
 
 async function handleClickFloorBtn(e) {
@@ -91,7 +112,7 @@ function renderPolygons(polygonsData) {
     const floorNode = document.getElementById('floor');
     
     const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    for (const d of polygonsData) {
+    for (const d of polygonsData.coordinates) {
         g.setAttribute('id', 'floor')
         var polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
         polygon.setAttribute('points', d.coordinates);
@@ -100,6 +121,23 @@ function renderPolygons(polygonsData) {
         g.appendChild(polygon);
     }
     floorNode.replaceWith(g);
+
+    removeOptions(selectFrom);
+    removeOptions(selectTo);
+    for (let item of polygonsData.select) {
+        const option_text = item.displayed_name;
+        const option_id = item.id;
+        
+        const optionFrom = document.createElement("option");
+        optionFrom.appendChild(document.createTextNode(option_text));
+        optionFrom.setAttribute("value", option_id);
+        selectFrom.appendChild(optionFrom);
+        
+        const optionTo = document.createElement("option");
+        optionTo.appendChild(document.createTextNode(option_text));
+        optionTo.setAttribute("value", option_id);
+        selectTo.appendChild(optionTo);
+    }
 }
 
 async function bootstrap() {
