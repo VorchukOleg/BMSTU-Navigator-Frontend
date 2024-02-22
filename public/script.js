@@ -15,22 +15,17 @@ class State {
 }
 
 const state = new State();
-
 const SVG = document.getElementById('svg');
-
-
-
 const selectFrom = document.getElementById('select-from');
 const selectTo = document.getElementById('select-to');
 
 async function handleSearch(e) {
     const pathFrom = selectFrom.value;
     const pathTo = selectTo.value;
+
     path = await getPath(pathFrom, pathTo);
-
-
-    path.path.forEach((id) => {
-        const el = document.getElementById(`bp_id_${id}`);
+    path.path.forEach((uuid) => {
+        const el = document.getElementById(`bp_id_${uuid}`);
         el.setAttribute('class', 'isSelectedHall');
     })
     const from = path.from;
@@ -65,7 +60,7 @@ function removeOptions(selectElement) {
 
 async function requestDataByFloor(floorId) {
     console.log(`request data for ${floorId}`);
-    let response = await fetch(`${link}/floors/get_all?floor_id=${floorId}`);
+    let response = await fetch(`${link}/floors/get_all?floor_uuid=${floorId}`);
     
     if (response.ok) { 
         let json = await response.json();
@@ -88,7 +83,7 @@ async function requestDataByFloor(floorId) {
 const processPolygonCoordinates = (data, idPrefix) => 
     Object.values(data).map(p => {
         const coord = Object.keys(p.coordinates).map(key => [p.coordinates[key].x, p.coordinates[key].y]);
-        return { id: `${idPrefix}${p.id}`, coordinates: coord };
+        return { uuid: `${idPrefix}${p.uuid}`, coordinates: coord };
     });
 
 
@@ -113,11 +108,12 @@ function renderPolygons(polygonsData) {
     
     const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
     for (const d of polygonsData.coordinates) {
+        console.log(d)
         g.setAttribute('id', 'floor')
         var polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
         polygon.setAttribute('points', d.coordinates);
         polygon.setAttribute('class', '');
-        polygon.setAttribute('id', d.id);
+        polygon.setAttribute('id', d.uuid);
         g.appendChild(polygon);
     }
     floorNode.replaceWith(g);
@@ -126,7 +122,7 @@ function renderPolygons(polygonsData) {
     removeOptions(selectTo);
     for (let item of polygonsData.select) {
         const option_text = item.displayed_name;
-        const option_id = item.id;
+        const option_id = item.uuid;
         
         const optionFrom = document.createElement("option");
         optionFrom.appendChild(document.createTextNode(option_text));
