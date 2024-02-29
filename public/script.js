@@ -12,9 +12,15 @@ class State {
     getState(key) {
        return this.globalState[key];
     }
+
+    resetState() {
+        this.globalState = {};
+    }
 }
 
+const buildingId = '8250b9ba-bc0d-4d2f-abf7-d91265e89050'
 const state = new State();
+const state2 = new State();
 const SVG = document.getElementById('svg');
 const selectFrom = document.getElementById('select-from');
 const selectTo = document.getElementById('select-to');
@@ -26,7 +32,12 @@ async function handleSearch(e) {
     path = await getPath(pathFrom, pathTo);
     path.path.forEach((uuid) => {
         const el = document.getElementById(`bp_id_${uuid}`);
-        el.setAttribute('class', 'isSelectedHall');
+        try {
+            el.setAttribute('class', 'isSelectedHall');
+        } catch (e) {
+          return
+        }
+   
     })
     const from = path.from;
     const to = path.to; 
@@ -37,8 +48,15 @@ async function handleSearch(e) {
 
 }
 
+async function handleReset(e) {
+    state2.resetState();
+}
+
 const searchButton = document.getElementById('search_path');
 searchButton.addEventListener('click', handleSearch)
+
+const resetButton = document.getElementById('reset_state');
+resetButton.addEventListener('click', handleReset)
 
 async function getPath(from, to) {
     let response = await fetch(`${link}/get_path?from=${from}&to=${to}`);
@@ -61,11 +79,14 @@ function removeOptions(selectElement) {
 async function requestDataByFloor(floorId) {
     console.log(`request data for ${floorId}`);
     let response = await fetch(`${link}/floors/get_all?floor_uuid=${floorId}`);
+    let responseRooms = await fetch(`${link}/get_all_rooms_in_the_building?uuid=${buildingId}`);
     
     if (response.ok) { 
         let json = await response.json();
+        let jsonRooms = await responseRooms.json()
 
         let basenodesJson = json.basenode;
+        let roomsJsonSelect = jsonRooms.rooms;
         let roomsJson = json.rooms;
 
         const basenodesPolygonCoordinates = processPolygonCoordinates(basenodesJson, 'bp_id_');
@@ -73,7 +94,7 @@ async function requestDataByFloor(floorId) {
 
         return {
             "coordinates" : [...roomPolygonCoordinates, ...basenodesPolygonCoordinates],
-            "select" : roomsJson
+            "select" : roomsJsonSelect
         };
     } else {
         alert("Ошибка HTTP: " + response.status);
@@ -98,26 +119,32 @@ async function handleClickFloorBtn(e) {
         state.setState(floorNum, data);
         
     }
-    renderPolygons(data);
+    renderPolygons(data, floorNum);
 }
 
 // рендеринг полиногов
-function renderPolygons(polygonsData) {
+function renderPolygons(polygonsData, floorNum) {
     console.log('data rendering');
     const floorNode = document.getElementById('floor');
-    
-    const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-    for (const d of polygonsData.coordinates) {
-        console.log(d)
-        g.setAttribute('id', 'floor')
-        var polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-        polygon.setAttribute('points', d.coordinates);
-        polygon.setAttribute('class', '');
-        polygon.setAttribute('id', d.uuid);
-        g.appendChild(polygon);
-    }
-    floorNode.replaceWith(g);
 
+    let renderedState = state2.getState(floorNum);
+    if (!renderedState) {
+        const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        for (const d of polygonsData.coordinates) {
+            console.log(d)
+            g.setAttribute('id', 'floor')
+            var polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+            polygon.setAttribute('points', d.coordinates);
+            polygon.setAttribute('class', '');
+            polygon.setAttribute('id', d.uuid);
+            g.appendChild(polygon);
+        }
+        floorNode.replaceWith(g);
+        state2.setState(floorNum, g);  
+    } else {
+        floorNode.replaceWith(renderedState);
+    }
+    
     removeOptions(selectFrom);
     removeOptions(selectTo);
     for (let item of polygonsData.select) {
