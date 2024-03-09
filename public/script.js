@@ -1,41 +1,58 @@
 const link = 'http://127.0.0.1:5000';
 
-class State {
+class FloorState {
     constructor() {
         this.globalState = {}
     }
 
-    setState(key, value) {
-        this.globalState[key] = value
+    setFloorState(floor, key, value) {
+        this.globalState[floor] = this.globalState[floor] || {};
+        this.globalState[floor][key] = value;
     }
 
-    getState(key) {
-       return this.globalState[key];
+    pushDelayedRender(floor, value) {
+        this.globalState[floor] = this.globalState[floor] || {};
+        this.globalState[floor]['delayed_display'] = this.globalState[floor]['delayed_display'] || [];
+        this.globalState[floor]['delayed_display'].push(value);
     }
 
-    resetState() {
-        this.globalState = {};
+    getFloorState(floor, key) {
+        return this.globalState[floor] ? this.globalState[floor][key] : undefined;
+    }
+
+    resetFloorState(key) {
+        for (let floor in this.globalState) {
+            if (this.globalState[floor].hasOwnProperty(key)) {
+                delete this.globalState[floor][key];
+            }
+        }
+    }
+
+    resetFloorStateForFloor(floor, key) {
+       
+        delete this.globalState[floor][key];
+       
     }
 }
 
 const buildingId = '8250b9ba-bc0d-4d2f-abf7-d91265e89050'
-const state = new State();
-const state2 = new State();
+const state = new FloorState();
+let currentFloorUUID = -1;
 const SVG = document.getElementById('svg');
 const selectFrom = document.getElementById('select-from');
 const selectTo = document.getElementById('select-to');
 
-async function handleSearch(e) {
+async function handleSearch() {
     const pathFrom = selectFrom.value;
     const pathTo = selectTo.value;
 
     path = await getPath(pathFrom, pathTo);
-    path.path.forEach((uuid) => {
-        const el = document.getElementById(`bp_id_${uuid}`);
-        try {
+    path.path.forEach((item) => {
+        const el = document.getElementById(`bp_id_${item.basenode_uuid}`);
+        if (currentFloorUUID == item.floor_uuid) {
             el.setAttribute('class', 'isSelectedHall');
-        } catch (e) {
-          return
+        } else {
+          state.pushDelayedRender(item.floor_uuid, item.basenode_uuid)
         }
    
     })
@@ -48,8 +65,20 @@ async function handleSearch(e) {
 
 }
 
-async function handleReset(e) {
-    state2.resetState();
+function delayedRender(floor_uuid) {
+    roomArray = state.getFloorState(floor_uuid, 'delayed_display')
+    if (typeof roomArray === "undefined") {
+        return
+    }
+    roomArray.forEach((basenode_uuid) => {
+        const el = document.getElementById(`bp_id_${basenode_uuid}`);
+        el.setAttribute('class', 'isSelectedHall');
+    })
+    state.resetFloorStateForFloor(floor_uuid, 'delayed_display', )
+}
+
+async function handleReset() {
+    state.resetFloorState('planDOM');
 }
 
 const searchButton = document.getElementById('search_path');
@@ -112,11 +141,12 @@ const processPolygonCoordinates = (data, idPrefix) =>
 async function handleClickFloorBtn(e) {
     console.log('handle click');
     const floorNum = e.target.value;
-    let data = state.getState(floorNum);
+    currentFloorUUID = floorNum
+    let data = state.getFloorState(floorNum, 'json_coordinates');
 
     if (!data) {
         data = await requestDataByFloor(floorNum);
-        state.setState(floorNum, data);
+        state.setFloorState(floorNum, 'json_coordinates', data);
         
     }
     renderPolygons(data, floorNum);
@@ -127,7 +157,7 @@ function renderPolygons(polygonsData, floorNum) {
     console.log('data rendering');
     const floorNode = document.getElementById('floor');
 
-    let renderedState = state2.getState(floorNum);
+    let renderedState = state.getFloorState(floorNum, 'planDOM');
     if (!renderedState) {
         const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
         for (const d of polygonsData.coordinates) {
@@ -140,11 +170,14 @@ function renderPolygons(polygonsData, floorNum) {
             g.appendChild(polygon);
         }
         floorNode.replaceWith(g);
-        state2.setState(floorNum, g);  
+        delayedRender(floorNum)
+        state.setFloorState(floorNum, 'planDOM', g);  
     } else {
         floorNode.replaceWith(renderedState);
+        delayedRender(floorNum)
+        state.setFloorState(floorNum, 'planDOM', g); 
     }
-    
+
     removeOptions(selectFrom);
     removeOptions(selectTo);
     for (let item of polygonsData.select) {
