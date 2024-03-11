@@ -6,13 +6,16 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
-    "start": "node index.js"
+    "prestart": "npm run compile:templates",
+    "start": "node server",
+    "compile:templates": "handlebars public/components/Menu/Menu.hbs -f public/components/Menu/Menu.precompiled.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
+    "handlebars": "^4.7.8",
     "hbs": "^4.2.0",
     "pg": "^8.11.3"
   },

@@ -8,7 +8,7 @@ app.use(express.json());
 app.use(express.static('public'))
 app.set('view engine', 'hbs');
 
-const controller = require('./controller');
+const controller = require('../controller');
 
 app.get('/', controller.getData)
 console.log(process.env.DB_USER);
