@@ -1,16 +1,22 @@
+'use strict';
+
 const express = require('express');
-require('dotenv').config();
-
-const PORT = process.env.PORT || 8080;
-
+const body = require('body-parser');
+const cookie = require('cookie-parser');
+const morgan = require('morgan');
+const uuid = require('uuid').v4;
+const path = require('path');
 const app = express();
-app.use(express.json());
-app.use(express.static('public'))
-app.set('view engine', 'hbs');
 
-const controller = require('../controller');
+app.use(morgan('dev'));
+app.use(express.static(path.resolve(__dirname, '..', 'public')));
+app.use(express.static(path.resolve(__dirname, '..', 'node_modules')));
+app.use(express.static(path.resolve(__dirname, 'images')));
+app.use(body.json());
+app.use(cookie());
 
-app.get('/', controller.getData)
-console.log(process.env.DB_USER);
-app.listen(PORT, () => console.log(`server start on port ${PORT}`));
+const port = process.env.PORT || 3000;
 
+app.listen(port, function () {
+    console.log(`Server listening port ${port}`);
+});
