@@ -1,3 +1,7 @@
+'use strict';
+
+import template from './FloorNavigationButtonGroup.hbs';
+
 // Тип рендера для демонстрации
 export const MENU_RENDER_TYPES = {
     DOM: 'DOM',
@@ -75,7 +79,7 @@ export class Menu {
     // Рендер с использованием шаблонов. Этот подход — правильный!
     // Не обязательно Handlebars. Есть множество решений.
     renderTemplate() {
-        const template = Handlebars.templates['FloorNavigationButtonGroup.hbs'];
+        //const template = Handlebars.templates['FloorNavigationButtonGroup.hbs'];
         const items = this.items.map(([key, {floor_uuid, floor_number}]) => {
             return {floor_uuid, floor_number};
         });

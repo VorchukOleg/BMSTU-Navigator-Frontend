@@ -9,34 +9,34 @@
 <body>
   <div id="root">
   </div>
-      <div class="navigation_panel_wrapper">
-        <div class="navigation_panel_wrapper__selectors">
-            <div>
-                <span>Откуда</span>
-                <select id="select-from">
-                </select>
-            </div>
-            <div>
-                <span>Куда</span>
-                <select id="select-to">
-                </select>
-            </div>            
-        </div>
-      <button id="search_path">Найти</button>
-    </div>
-
-    <div class="scheme_container">
-      <div class="scheme">
-        <svg id="svg">
-            <g id="floor"/>
-            
-        </svg>
+  <div class="navigation_panel_wrapper">
+      <div class="navigation_panel_wrapper__selectors">
+          <div>
+              <span>Откуда</span>
+              <select id="select-from">
+              </select>
+          </div>
+          <div>
+              <span>Куда</span>
+              <select id="select-to">
+              </select>
+          </div>            
       </div>
-    </div>
+    <button id="search_path">Найти</button>
+  </div>
 
-  <script src="/handlebars/dist/handlebars.runtime.js"></script>
+  <div class="scheme_container">
+    <div class="scheme">
+      <svg id="svg">
+          <g id="floor"/>
+          
+      </svg>
+    </div>
+  </div>
+
+  <!-- <script src="/handlebars/dist/handlebars.runtime.js"></script>
   <script src="./components/FloorNavigationButtonGroup/FloorNavigationButtonGroup.precompiled.js"></script>
-  <script src="modules/ajax.js"></script>
-  <script type="module" async src="index.js"></script>
+  <script src="modules/ajax.js"></script> -->
+  <script type="module" async src="bundle.js"></script>
 </body>
 </html>
