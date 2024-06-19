@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
   mode: 'production',
-  entry: './public/index.js',
+  entry: './public/main.jsx',
   devtool: 'eval-source-map',
   output: {
     path: path.resolve(__dirname, 'public'),
@@ -12,7 +12,7 @@ module.exports = {
     rules: [
       {
         test: /.jsx?$/,
-        include: [path.resolve(__dirname, 'public')],
+        include: [path.resolve(__dirname, 'public'), path.resolve(__dirname, 'src')],
         exclude: [path.resolve(__dirname, 'node_modules')],
         loader: 'babel-loader',
         options: {

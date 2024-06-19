@@ -3,13 +3,15 @@ import { processPolygonCoordinates } from "../modules/calculate-poligon";
 export async function getFloorNumbersAndUUIDs(link, buildingId) {
   let response = await fetch(`${link}/floors/${buildingId}`);
   let json = await response.json();
+  let ind = 0;
   const transformed = json.reduce((acc, item) => {
     acc.floors[item.floor_number] = {
-        floor_uuid: item.uuid,
-        floor_number: item.floor_number.toString(),
+        floorUUID: item.uuid,
+        floorNumber: item.floor_number.toString(),
+        id: ind++,
     };
     return acc;
-}, { floors: {} });
+}, { floors: [] });
 
 return transformed
 }
