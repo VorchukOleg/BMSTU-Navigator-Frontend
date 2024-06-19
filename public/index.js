@@ -1,3 +1,28 @@
+import React, { StrictMode } from "react";
+import ReactDOM from 'react-dom/client';
+import { createRoot } from "react-dom/client";
+// import "./styles.scss";
+
+// import App from "./App.jsx";
+
+// const root = createRoot(document.getElementById("root"));
+// root.render(
+//   <StrictMode>
+//     <App />
+//   </StrictMode>
+// );
+
+
+import { 
+    findPolygonCenter,
+    calculatePolygonWidthAndHeight,
+    fontSizeProcessor, 
+} from "../src/modules/calculate-poligon.js";
+import {
+    getFloorNumbersAndUUIDs,
+    getPath,
+    requestDataByFloor
+} from "../src/requests/building-data.js"
 import {Menu, MENU_RENDER_TYPES} from "./components/FloorNavigationButtonGroup/FloorNavigationButtonGroup.js";
 
 const rootElement = document.getElementById('root');
@@ -5,20 +30,7 @@ const rootElement = document.getElementById('root');
 const link = 'http://127.0.0.1:5000';
 const buildingId = '8250b9ba-bc0d-4d2f-abf7-d91265e89050'
 
-async function getFloorNumbersAndUUIDs() {
-  let response = await fetch(`${link}/floors/${buildingId}`);
-  let json = await response.json();
-  const transformed = json.reduce((acc, item) => {
-    acc.floors[item.floor_number] = {
-        floor_uuid: item.uuid,
-        floor_number: item.floor_number.toString(),
-    };
-    return acc;
-}, { floors: {} });
-return transformed
-}
-
-const floorsList = await getFloorNumbersAndUUIDs();
+const floorsList = await getFloorNumbersAndUUIDs(link, buildingId);
 
 const menu = new Menu(rootElement, floorsList);
 
@@ -87,7 +99,7 @@ async function handleSearch() {
   const pathFrom = selectFrom.value;
   const pathTo = selectTo.value;
 
-  const path = await getPath(pathFrom, pathTo);
+  const path = await getPath(link, pathFrom, pathTo);
   path.path.forEach((item) => {
     if (currentFloorUUID == item.floor_uuid) {
         const el = document.getElementById(`bp_id_${item.basenode_uuid}`);
@@ -115,11 +127,11 @@ async function handleSearch() {
     }
   }
 
-//   const fromFloorNumber = document.getElementById(from.floor_uuid);
-//   const toFloorNumber = document.getElementById(to.floor_uuid);
-  
-//   fromFloorNumber.setAttribute('class', 'selected_floor_text');
-//   toFloorNumber.setAttribute('class', 'selected_floor_text');
+    //   const fromFloorNumber = document.getElementById(from.floor_uuid);
+    //   const toFloorNumber = document.getElementById(to.floor_uuid);
+    
+    //   fromFloorNumber.setAttribute('class', 'selected_floor_text');
+    //   toFloorNumber.setAttribute('class', 'selected_floor_text');
   
   if (currentFloorUUID == from.floor_uuid) {
       const departure = document.getElementById(`r_id_${from.room_uuid}`);
@@ -165,57 +177,12 @@ function delayedRender(floor_uuid) {
 const searchButton = document.getElementById('search_path');
 searchButton.addEventListener('click', handleSearch)
 
-async function getPath(from, to) {
-    let response = await fetch(`${link}/get_path?from=${from}&to=${to}`);
-    if (response.ok) { 
-        let json = await response.json();
-        return json;
-      } else {
-        alert("Ошибка HTTP: " + response.status);
-      }
-}
-
 function removeOptions(selectElement) {
     var i, L = selectElement.options.length - 1;
     for(i = L; i >= 0; i--) {
        selectElement.remove(i);
     }
  }
-
-
-async function requestDataByFloor(floorId) {
-    console.log(`request data for ${floorId}`);
-    let response = await fetch(`${link}/floors/get_all?floor_uuid=${floorId}`);
-    let responseRooms = await fetch(`${link}/get_all_rooms_in_the_building?uuid=${buildingId}`);
-    
-    if (response.ok) { 
-        let json = await response.json();
-        let jsonRooms = await responseRooms.json()
-
-        let basenodesJson = json.basenode;
-        let roomsJsonSelect = jsonRooms.rooms;
-        let roomsJson = json.rooms;
-
-        const basenodesPolygonCoordinates = processPolygonCoordinates(basenodesJson, 'bp_id_');
-        const roomPolygonCoordinates = processPolygonCoordinates(roomsJson, 'r_id_');
-
-        return {
-            "coordinates" : [...basenodesPolygonCoordinates, ...roomPolygonCoordinates],
-            "select" : roomsJsonSelect
-        };
-    } else {
-        alert("Ошибка HTTP: " + response.status);
-    } 
-}
-
-const processPolygonCoordinates = (data, idPrefix) => 
-    Object.values(data).map(p => {
-        const coord = Object.keys(p.coordinates).map(key => [p.coordinates[key].x, p.coordinates[key].y]);
-        if (idPrefix == 'r_id_') {
-          return { uuid: `${idPrefix}${p.uuid}`, coordinates: coord, displayed_name: p.displayed_name };
-        }
-        return { uuid: `${idPrefix}${p.uuid}`, coordinates: coord, basenode_type: p.basenode_type};
-    });
 
 async function handleClickFloorBtn(e) {
     console.log('handle click');
@@ -224,7 +191,7 @@ async function handleClickFloorBtn(e) {
     let data = state.getFloorState(floorNum, 'json_coordinates');
 
     if (!data) {
-        data = await requestDataByFloor(floorNum);
+        data = await requestDataByFloor(link, buildingId, floorNum);
         state.setFloorState(floorNum, 'json_coordinates', data);
         
     }
@@ -240,139 +207,95 @@ async function handleClickFloorBtn(e) {
     
 }
 
-function createTextElement(x, y, textAnchor, fill, fontSize, textContent) {
-  const SVG_NS = "http://www.w3.org/2000/svg";
-  let textElement = document.createElementNS(SVG_NS, "text");
-  textElement.setAttributeNS(null, "x", x);
-  textElement.setAttributeNS(null, "y", y);
-  textElement.setAttributeNS(null, "text-anchor", textAnchor);
-  textElement.setAttributeNS(null, "fill", fill);
-  textElement.setAttributeNS(null, "font-size", fontSize);
-  textElement.textContent = textContent;
-  return textElement;
+function TextElement({x, y, textAnchor, fill, fontSize, textContent}) {
+    return (
+        <text
+            x={x}
+            y={y}
+            textAnchor={textAnchor}
+            fill={fill}
+            fontSize={fontSize}
+        >
+            {textContent}
+        </text>
+    );
  }
 
- function findPolygonCenter(vertices) {
-  let numVertices = vertices.length;
-  
-  let sumX = 0;
-  let sumY = 0;
-  
-  for (let i = 0; i < vertices.length; i++) {
-      sumX += parseInt(vertices[i][0]); // Преобразование строки в число
-      sumY += parseInt(vertices[i][1]); // Преобразование строки в число
-  }
-  
-  let centerX = sumX / numVertices;
-  let centerY = sumY / numVertices;
-  
-  return { x: centerX, y: centerY };
-}
 
-function calculatePolygonWidthAndHeight(coordinates) {
-  // Проверяем, что массив содержит хотя бы одну координату
-  if (coordinates.length < 1) {
-      throw new Error("Недостаточно координат для определения многоугольника.");
-  }
-
-  // Извлекаем координаты x и y
-  const xCoordinates = coordinates.map(point => point[0]);
-  const yCoordinates = coordinates.map(point => point[1]);
-
-  // Вычисляем минимальные и максимальные значения координат x и y
-  const minX = Math.min(...xCoordinates);
-  const maxX = Math.max(...xCoordinates);
-  const minY = Math.min(...yCoordinates);
-  const maxY = Math.max(...yCoordinates);
-
-  // Вычисляем ширину и высоту многоугольника
-  const width = maxX - minX;
-  const height = maxY - minY;
-
-  return { width, height };
-}
-
-function fontSizeProcessor(polygonSize) {
-  const width = polygonSize.width;
-  
-  if (width > 60) {
-    return 20
-  }
-
-  return width / 3.2;
-     
- }
-
+const floorNode = document.getElementById('svg');
+const root = createRoot(floorNode);
 
 // рендеринг полиногов
 function renderPolygons(polygonsData, floorNum, resetFloor) {
     console.log('data rendering');
-    const floorNode = document.getElementById('floor');
+    // const floorNode = document.getElementById('floor');
+    
     
     let renderedState = state.getFloorState(floorNum, 'planDOM');
     if (!renderedState || resetFloor) {
-        const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-        g.setAttribute('id', 'floor')
-        for (const d of polygonsData.coordinates) {
-            let polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-            
-            const polygonCenter = findPolygonCenter(d.coordinates)
-            polygon.setAttribute('points', d.coordinates);
-            polygon.setAttribute('class', '');
-            polygon.setAttribute('id', d.uuid);
-
-            if (d.uuid.charAt(0) == 'r'){
-                polygon.setAttribute('class', 'isAud');
-                polygon.addEventListener('mouseover', function(e) {  
-                    this.style.fill = '#83bfd3';  
-                });
-
-                polygon.addEventListener('mouseout', function() { 
-                    this.style.fill = '#ADD8E6';  
-                });
-            } else if (d.basenode_type == 'Лестница' || d.basenode_type == 'Лифт') {
-                polygon.setAttribute('class', 'isElevatorOrStairs');
-            } else {
-                polygon.setAttribute('class', 'isHall');
-            }
-            g.appendChild(polygon);
-           
-            if (d.uuid.charAt(0) == 'r'){
-              const textElement = createTextElement(polygonCenter.x, polygonCenter.y, "middle", "black", fontSizeProcessor(calculatePolygonWidthAndHeight(d.coordinates)), d.displayed_name);
-              
-              g.appendChild(textElement);
-            } else if (d.basenode_type == 'Лестница') {
-                let pngImage = document.createElementNS("http://www.w3.org/2000/svg","image");
-                const imageSize = 30;
-                pngImage.setAttribute("x", polygonCenter.x - imageSize / 2);
-                if (d.uuid !== 'bp_id_6291b50f-05b6-45f4-a41b-fbb4c9e5c961' && d.uuid !=='bp_id_2747844c-a00c-403d-8b3d-26d2a80171e5') {
-                    pngImage.setAttribute("y", polygonCenter.y - imageSize / 2);
-                } else if (d.uuid ==='bp_id_2747844c-a00c-403d-8b3d-26d2a80171e5'){
-                    pngImage.setAttribute("y", 210);
-                } else {
-                    pngImage.setAttribute("y", 215);
+        const imageSize = 30;
+        const g = (
+            <g id="floor">
+                {polygonsData.coordinates.map((d) => (
+                    <g key={d.uuid}>
+                        <polygon
+                            points={d.coordinates}
+                            id={d.uuid}
+                            key={d.uuid}
+                            className={
+                                d.uuid.charAt(0) == 'r' 
+                                ? 'isAud'
+                                : d.basenode_type == 'Лестница' || d.basenode_type == 'Лифт'
+                                ? 'isElevatorOrStairs'
+                                : 'isHall'
+                            }
+                            onMouseOver={d.uuid.charAt(0) == 'r' ? (e) => {e.target.style.fill = '#83bfd3';} : () => {}}
+                            onMouseOut={d.uuid.charAt(0) == 'r' ? (e) => {e.target.style.fill = '#ADD8E6';} : () => {}}
+                        />
+                        {
+                            d.uuid.charAt(0) == 'r'
+                            ? <TextElement 
+                                x={findPolygonCenter(d.coordinates).x} 
+                                y={findPolygonCenter(d.coordinates).y} 
+                                textAnchor={"middle"} 
+                                fill={"black"}
+                                fontSize={fontSizeProcessor(calculatePolygonWidthAndHeight(d.coordinates))}
+                                textContent={d.displayed_name}
+                            />
+                            : d.basenode_type == 'Лестница'
+                            ? <image
+                                x={findPolygonCenter(d.coordinates).x - imageSize / 2}
+                                y={d.uuid !== 'bp_id_6291b50f-05b6-45f4-a41b-fbb4c9e5c961' && d.uuid !=='bp_id_2747844c-a00c-403d-8b3d-26d2a80171e5'
+                                    ? findPolygonCenter(d.coordinates).y - imageSize / 2
+                                    : d.uuid ==='bp_id_2747844c-a00c-403d-8b3d-26d2a80171e5'
+                                    ? 210
+                                    : 215
+                                }
+                                height={imageSize}
+                                width={imageSize}
+                                href="stair.svg"
+                            />
+                            : d.basenode_type == 'Лифт'
+                            && <image
+                                x={findPolygonCenter(d.coordinates).x - imageSize / 2}
+                                y={findPolygonCenter(d.coordinates).y - imageSize / 2}
+                                height={imageSize}
+                                width={imageSize}
+                                href="elevator.svg"
+                            />
+                        }
+                    </g>
+                ))
                 }
-                pngImage.setAttribute("width", imageSize);
-                pngImage.setAttribute("height", imageSize);
-                pngImage.setAttributeNS("http://www.w3.org/1999/xlink", "href", "stair.svg");
-                g.appendChild(pngImage);
-            } else if (d.basenode_type == 'Лифт') {
-                let pngImage = document.createElementNS("http://www.w3.org/2000/svg","image");
-                const imageSize = 30;
-                pngImage.setAttribute("x", polygonCenter.x - imageSize / 2);
-                pngImage.setAttribute("y", polygonCenter.y - imageSize / 2);
-                pngImage.setAttribute("width", imageSize);
-                pngImage.setAttribute("height", imageSize);
-                pngImage.setAttributeNS("http://www.w3.org/1999/xlink", "href", "elevator.svg");
-                g.appendChild(pngImage);
-            }
-        }
-        floorNode.replaceWith(g);
-        delayedRender(floorNum)
+            </g>
+        );
+        root.render(g)
+        setTimeout(() => delayedRender(floorNum), 100)
         state.setFloorState(floorNum, 'planDOM', g);  
     } else {
-        floorNode.replaceWith(renderedState);
-        delayedRender(floorNum)
+        // floorNode.replaceWith(renderedState);
+        root.render(renderedState)
+        setTimeout(() => delayedRender(floorNum), 100)
         state.setFloorState(floorNum, 'planDOM', renderedState); 
     }
 
@@ -412,12 +335,12 @@ async function initialFloor() {
     let data = state.getFloorState(floorNum, 'json_coordinates');
 
     if (!data) {
-        data = await requestDataByFloor(floorNum);
+        data = await requestDataByFloor(link, buildingId, floorNum);
         state.setFloorState(floorNum, 'json_coordinates', data);
         
     }
 
-    renderPolygons(data, floorNum, false);
+    await renderPolygons(data, floorNum, false);
 }
 
 renderMenu();
@@ -426,5 +349,3 @@ await initialFloor();
 
 const radioBtn = document.querySelector('.floor_btn');
 radioBtn.checked = true;
-
-
