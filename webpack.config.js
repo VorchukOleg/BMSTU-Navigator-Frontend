@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
   mode: 'production',
-  entry: './public/main.jsx',
+  entry: './src/main.jsx',
   devtool: 'eval-source-map',
   output: {
     path: path.resolve(__dirname, 'public'),

@@ -5,8 +5,8 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-import Root, {loader as rootLoader} from "../src/routes/root.jsx";
-import Scheme, {loader as schemeLoader} from "../src/routes/scheme.jsx";
+import Root, {loader as rootLoader} from "./routes/root.jsx";
+import Scheme, {loader as schemeLoader} from "./routes/scheme.jsx";
 
 const router = createBrowserRouter([
   {
@@ -25,10 +25,11 @@ const router = createBrowserRouter([
         loader: schemeLoader,
       }
     ],
-  }
+  },
 ]);
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+const root =ReactDOM.createRoot(document.getElementById('root'))
+root.render(
   <React.StrictMode>
     <RouterProvider router={router} />
   </React.StrictMode>,
