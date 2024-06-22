@@ -20,7 +20,7 @@ const router = createBrowserRouter([
         element: <div>Testing index...</div>
       },
       {
-        path: "floor/:floorUUID",
+        path: "floor/:floorNum",
         element: <Scheme />,
         loader: schemeLoader,
       }
@@ -28,7 +28,7 @@ const router = createBrowserRouter([
   },
 ]);
 
-const root =ReactDOM.createRoot(document.getElementById('root'))
+const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
   <React.StrictMode>
     <RouterProvider router={router} />
