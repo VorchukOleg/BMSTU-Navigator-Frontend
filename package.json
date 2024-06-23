@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prestart": "npm run compile:templates",
     "start": "node server",
-    "compile:templates": "handlebars public/components/FloorNavigationButtonGroup/FloorNavigationButtonGroup.hbs -f public/components/FloorNavigationButtonGroup/FloorNavigationButtonGroup.precompiled.js"
+    "compile:templates": ""
   },
   "author": "",
   "license": "ISC",
