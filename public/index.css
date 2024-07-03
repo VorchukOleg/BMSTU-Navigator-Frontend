@@ -1,8 +1,9 @@
 @import "components/FloorNavigationButtonGroup/FloorNavigationButtonGroup.css";
 
 .scheme_container{
-  display: grid;
-  align-items: center;
+  display: flex;
+  justify-content: center;
+
 }
 
 .scheme {
@@ -65,7 +66,7 @@
 }
 
 .navigation_panel_wrapper button, .floor_button_panels button {
-  margin-top: 20px;
+  margin: 20px 5px;
   padding: 15px;
   border: none;
   border-radius: 6px;
@@ -80,6 +81,7 @@
   -webkit-text-stroke-width: 0.5px;
   -webkit-text-stroke-color: #0B63F6;
   -webkit-text-fill-color: #4CC9F0;
+  background-color: #B2EF9B;
 }
 
 :focus {

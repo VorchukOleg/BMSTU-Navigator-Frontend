@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from "react-router-dom";
 
-export function FloorNavigation({floors}){
+export function FloorNavigation({floors, pathRender}){
   const newFloors = Object(floors)
   delete newFloors[0]
 
@@ -13,8 +13,12 @@ export function FloorNavigation({floors}){
             <NavLink
               to={`floor/${floor.floorNumber}`}
               className={({ isActive }) => isActive
-                ? 'floor_btn floor_btn--active'
-                : 'floor_btn'
+                ? (floor?.selected && pathRender)
+                  ? 'floor_btn floor_btn--active selected_floor_text' 
+                  : 'floor_btn floor_btn--active'
+                : (floor?.selected && pathRender) 
+                  ? 'floor_btn selected_floor_text' 
+                  : 'floor_btn'
               }
               style={({ isActive }) => isActive
                 ? {pointerEvents: 'none'}

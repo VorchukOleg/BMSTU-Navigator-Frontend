@@ -1,12 +1,15 @@
 import React from 'react';
 import { 
   useLoaderData,
+  useOutletContext,
 } from "react-router-dom";
 import { requestDataByFloor } from '../requests/building-data';
+import { getPathUUIDs } from '../modules/path_builder.js';
 import { 
   findPolygonCenter, 
   fontSizeProcessor, 
-  calculatePolygonWidthAndHeight } from '../modules/calculate-poligon';
+  calculatePolygonWidthAndHeight,
+} from '../modules/calculate-poligon';
 import { PolygonTextElement } from '../components/polygon-text-element.jsx';
 
 
@@ -17,13 +20,17 @@ export async function loader({params}) {
   document.title = `Дом РФ - ${floorNum} этаж`
 
   const polygonsData = await requestDataByFloor(link, floorNum);
+  const pathUUIDs = getPathUUIDs();
 
-  return {polygonsData};
+  return {polygonsData, pathUUIDs};
 }
 
 export default function Scheme() {
-  const {polygonsData} = useLoaderData();
+  const {polygonsData, pathUUIDs} = useLoaderData();
+  const {pathRender} = useOutletContext();
   const imageSize = 30;
+
+  const setPathUUID = new Set(pathUUIDs);
   
   return (
     <g id="floor">
@@ -34,10 +41,17 @@ export default function Scheme() {
             id={d.uuid}
             key={d.uuid}
             className={d.uuid.charAt(0) == 'r'
-              ? 'isAud'
+              ? (pathRender && setPathUUID.has(d.uuid)) 
+                ? 'isAud isSelectedAud' 
+                : 'isAud'
               : d.basenode_type == 'Лестница' || d.basenode_type == 'Лифт'
-                ? 'isElevatorOrStairs'
-                : 'isHall'}
+                ? (pathRender && setPathUUID.has(d.uuid)) 
+                  ? 'isElevatorOrStairs isSelectedHall' 
+                  : 'isElevatorOrStairs'
+                : (pathRender && setPathUUID.has(d.uuid)) 
+                  ? 'isHall isSelectedHall' 
+                  : 'isHall'
+            }
             onMouseOver={d.uuid.charAt(0) == 'r' 
               ? (e) => { e.target.style.fill = '#83bfd3'; } 
               : () => { } }
