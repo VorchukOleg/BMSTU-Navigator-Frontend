@@ -76,13 +76,13 @@ class Ajax {
    */
   async #ajax(url, callback, init) {
     await fetch(url, init)
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          }
-        })
-        .then((data) => callback(data))
-        .catch((err) => console.log(err));
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+      })
+      .then((data) => callback(data))
+      .catch((err) => console.log(err));
   }
 }
 

@@ -1,6 +1,7 @@
 import React from 'react';
 
-export function PolygonTextElement({ x, y, textAnchor, fill, fontSize, textContent }) {
+// eslint-disable-next-line react/prop-types
+export function PolygonTextElement({x, y, textAnchor, fill, fontSize, textContent}) {
   return (
     <text
       x={x}

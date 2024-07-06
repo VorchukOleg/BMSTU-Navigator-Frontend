@@ -1,30 +1,37 @@
-import React from "react";
+import './index.css';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import {
   createBrowserRouter,
   RouterProvider,
-} from "react-router-dom";
-import Root, {
-  loader as rootLoader,
-  action as routeAction,
-} from "./routes/root.jsx";
-import Scheme, {loader as schemeLoader} from "./routes/scheme.jsx";
+} from 'react-router-dom';
+import Root from './routes/root.jsx';
+import Building, {
+  loader as buildingLoader,
+  action as buildingAction,
+} from './routes/building.jsx';
+import Scheme, {loader as schemeLoader} from './routes/scheme.jsx';
+import ErrorPage from './routes/error.jsx';
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <Root />,
-    loader: rootLoader,
-    action: routeAction,
-    errorElement: <div>Error!</div>,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: '/:buildingCode',
+    element: <Building />,
+    loader: buildingLoader,
+    action: buildingAction,
+    errorElement: <ErrorPage />,
     children: [
       {
-        index: true,
-        // Здесь нужно что-то придумать. Возможно, в индексе должен отображаться первый этаж
-        element: <div>Testing index...</div>
+          index: true,
+        element: <image className='rounded-lg' href="images/665730fdc94d5.jpg" width="100%" height="100%" />,
       },
       {
-        path: "floor/:floorNum",
+        path: 'floor/:floorNum',
         element: <Scheme />,
         loader: schemeLoader,
       }
@@ -32,7 +39,7 @@ const router = createBrowserRouter([
   },
 ]);
 
-const root = ReactDOM.createRoot(document.getElementById('root'))
+const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <RouterProvider router={router} />
