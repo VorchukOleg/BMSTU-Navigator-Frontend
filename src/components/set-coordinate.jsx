@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from '../styles/set-coordinate.scss';
 
 // eslint-disable-next-line react/prop-types
 export default function SetCoordinate({xValue, yValue, onXChange, onYChange, onDelete}) {

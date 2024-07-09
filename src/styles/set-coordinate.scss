@@ -1,0 +1,40 @@
+.coordinate-section {
+  margin: 2% 3%;
+  background-color: #cfd8ec;
+  padding: 2%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  &__container {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    margin-bottom: 2%;
+
+    &--inputs {
+      width: 75%;
+      display: flex;
+    }
+
+    &--btn {
+      width: 25%;
+    }
+
+    &--input-element {
+      width: 50%;
+      input {
+        margin-left: 10px;
+        width: 100px;
+        padding: 5px;
+      }
+    }
+  }
+
+  &__add-btn {
+    padding: 10px 16px;
+    background-color: #b9e28c;
+    border-radius: 8px;
+    color: #000;
+  }
+}

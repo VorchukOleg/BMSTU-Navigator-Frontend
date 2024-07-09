@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import SetCoordinate from '../components/set-coordinate.jsx';
 import ConnectionComponent from '../components/connection-component.jsx';
+import styles from '../styles/admin-page.scss';
 
 export default function AdminPage() {
   const [points, setPoints] = useState([{ x: '', y: '' }]);
