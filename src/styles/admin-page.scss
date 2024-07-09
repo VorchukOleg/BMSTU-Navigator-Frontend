@@ -1,7 +1,7 @@
 .building-plug {
   display: flex;
   width: 100%;
-  padding: 3%;
+  padding: 15px;
   height: 400px;
 }
 
@@ -15,5 +15,42 @@
 
   &__right-section {
     width: 25%;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.routes-dropdown {
+  display: inline-block;
+  font-size: 14px;
+  padding-top: 15px;
+  
+  &__btn {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-position: 100%;
+    background-repeat: no-repeat;
+    background-size: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    padding: 8px 12px;
+    width: 152px;
+
+    span {
+      margin-right: 10px;
+    }
+  }
+
+  &__content {
+    position: absolute;
+    min-width: 152px;
+    z-index: 1;
+
+    a {
+      color: black;
+      padding: 12px 0;
+      text-decoration: none;
+      display: block;
+    }
   }
 }
