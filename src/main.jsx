@@ -13,6 +13,8 @@ import Building, {
 import Scheme, {loader as schemeLoader} from './routes/scheme.jsx';
 import AdminPage from './routes/admin-page.jsx';
 import ErrorPage from './routes/error.jsx';
+import ConnectionComponent from './components/admin-page/connection-component.jsx';
+import SetCoordinate from './components/admin-page/set-coordinate.jsx';
 
 const router = createBrowserRouter([
   {
@@ -28,7 +30,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-          index: true,
+        index: true,
         element: <image className='rounded-lg' href="images/665730fdc94d5.jpg" width="100%" height="100%" />,
       },
       {
@@ -41,6 +43,16 @@ const router = createBrowserRouter([
   {
     path: '/admin',
     element: <AdminPage />,
+    children: [
+      {
+        path: 'editing',
+        element: <SetCoordinate />,
+      },
+      {
+        path: 'connection',
+        element: <ConnectionComponent />
+      }
+    ],
   },
 ]);
 

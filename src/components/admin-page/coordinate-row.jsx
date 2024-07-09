@@ -1,8 +1,8 @@
 import React from 'react';
-import styles from '../styles/set-coordinate.scss';
+import styles from '../../styles/set-coordinate.scss';
 
 // eslint-disable-next-line react/prop-types
-export default function SetCoordinate({xValue, yValue, onXChange, onYChange, onDelete}) {
+export default function CoordinateRow({xValue, yValue, onXChange, onYChange, onDelete}) {
   return (
     <div className='coordinate-section__container'>
       <div className='coordinate-section__container--inputs'>

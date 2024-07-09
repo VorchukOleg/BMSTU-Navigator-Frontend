@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from '../styles/connection-component.scss';
+import styles from '../../styles/connection-component.scss';
 
 export default function ConnectionComponent() {
   const [polygonOptions, setPolygonOptions] = useState([
