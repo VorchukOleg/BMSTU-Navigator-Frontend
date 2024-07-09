@@ -148,3 +148,65 @@ label:first-child a {
 label:last-child a {
   border-radius: 0 0.375em 0.375em 0;
 }
+
+.coordinate-section {
+  margin: 2% 3%;
+  background-color: #b5bfd9;
+  padding: 2%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  &__container {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    margin-bottom: 2%;
+
+    &--inputs {
+      width: 75%;
+      display: flex;
+    }
+
+    &--btn {
+      width: 25%;
+    }
+
+    &--input-element {
+      width: 50%;
+      input {
+        margin-left: 10px;
+        width: 100px;
+        padding: 5px;
+      }
+    }
+  }
+
+  &__add-btn {
+    padding: 10px 16px;
+    background-color: #b9e28c;
+    border-radius: 8px;
+    color: #000;
+  }
+}
+
+
+.building-plug {
+  display: flex;
+  width: 100%;
+  padding: 3%;
+  height: 400px;
+}
+
+.admin-page {
+  display: flex;
+  width: 100%;
+
+  &__left-section {
+    width: 75%;
+  }
+
+  &__right-section {
+    width: 25%;
+  }
+}

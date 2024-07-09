@@ -1,4 +1,4 @@
-import './index.css';
+import './index.scss';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import {
@@ -11,6 +11,7 @@ import Building, {
   action as buildingAction,
 } from './routes/building.jsx';
 import Scheme, {loader as schemeLoader} from './routes/scheme.jsx';
+import AdminPage from './routes/admin-page.jsx';
 import ErrorPage from './routes/error.jsx';
 
 const router = createBrowserRouter([
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
         loader: schemeLoader,
       }
     ],
+  },
+  {
+    path: '/admin',
+    element: <AdminPage />,
   },
 ]);
 
