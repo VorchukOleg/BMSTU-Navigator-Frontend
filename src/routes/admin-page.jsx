@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import SetCoordinate from '../components/set-coordinate.jsx';
+import ConnectionComponent from '../components/connection-component.jsx';
 
 export default function AdminPage() {
   const [points, setPoints] = useState([{ x: '', y: '' }]);
@@ -41,6 +42,7 @@ export default function AdminPage() {
           ))}
           <button className="coordinate-section__add-btn" onClick={addPoint}>Добавить</button>
         </div>
+        <ConnectionComponent />
       </div>
       <div className='admin-page__right-section'></div>
     </div>
