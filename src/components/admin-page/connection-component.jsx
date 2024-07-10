@@ -20,32 +20,35 @@ export default function ConnectionComponent() {
   const selectedPolygon2Ref = React.createRef();
 
   return (
-    <div className="connection-component">
-      <div className="connection-window">
-        <div className="dropdown-container">
-          <div className="dropdown">
-            <select ref={selectedPolygonRef} className="dropdown__btn">
-              {polygonOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+    <div className='connection-component'>
+      <div className="connection-component__addition">
+        <div className="connection-window">
+          <div className="dropdown-container">
+            <div className="dropdown">
+              <select ref={selectedPolygonRef} className="dropdown__btn">
+                {polygonOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="dropdown">
+              <select ref={selectedPolygon2Ref} className="dropdown__btn">
+                {polygonOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-          <div className="dropdown">
-            <select ref={selectedPolygon2Ref} className="dropdown__btn">
-              {polygonOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
+          <button className="create-link-btn" onClick={handleCreateLink}>
+            Создать связь
+          </button>
         </div>
-        <button className="create-link-btn" onClick={handleCreateLink}>
-          Создать связь
-        </button>
       </div>
+      <div className='connection-component__list'></div>
     </div>
   );
 };
