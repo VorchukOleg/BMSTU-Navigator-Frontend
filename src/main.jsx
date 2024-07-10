@@ -15,6 +15,7 @@ import AdminPage from './routes/admin-page.jsx';
 import ErrorPage from './routes/error.jsx';
 import ConnectionComponent from './components/admin-page/connection-component.jsx';
 import SetCoordinate from './components/admin-page/set-coordinate.jsx';
+import PolygonSettings from './components/admin-page/polygon-settings.jsx';
 
 const router = createBrowserRouter([
   {
@@ -51,7 +52,11 @@ const router = createBrowserRouter([
       {
         path: 'connection',
         element: <ConnectionComponent />
-      }
+      },
+      {
+        path: 'settings',
+        element: <PolygonSettings />,
+      },
     ],
   },
 ]);

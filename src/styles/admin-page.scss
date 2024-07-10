@@ -27,11 +27,7 @@
   height: auto;
   
   &__btn {
-    transition: .3s;
-
-    &:hover {
-      background-color: #e2e2e2;
-    }
+    width: 180px !important;
 
     span {
       margin-right: 10px;
@@ -40,7 +36,7 @@
 
   &__content {
     position: absolute;
-    width: 152px;
+    width: 180px;
     z-index: 1;
     border: 1px solid #bbb;
     border-radius: 4px;
