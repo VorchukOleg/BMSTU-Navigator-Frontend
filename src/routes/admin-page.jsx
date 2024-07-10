@@ -1,26 +1,22 @@
 import React, {useState} from 'react';
-import {Link, Outlet} from 'react-router-dom';
+import {
+  Link,
+  Outlet,
+  useLocation
+} from 'react-router-dom';
 import styles from '../styles/admin-page.scss';
 
 export default function AdminPage() {
-  const sections = [
+  const sections =
     {
-      name: 'Редактирование',
-      href: '/admin/editing',
-    },
-    {
-      name: 'Разметка',
-      href: '/admin/markup',
-    },
-    {
-      name: 'Свзяывание',
-      href: '/admin/connection',
-    },
-    {
-      name: 'Настройки полигона',
-      href: '/admin/settings',
-    },
-  ];
+      '/admin/editing':'Редактирование',
+      '/admin/markup': 'Разметка',
+      '/admin/connection': 'Свзяывание',
+      '/admin/settings': 'Настройки полигона',
+    };
+
+  const location = useLocation();
+  const activeName = sections[location.pathname];
 
   const [isVisible, setIsVisible] = useState(false);
 
@@ -37,15 +33,20 @@ export default function AdminPage() {
       </div>
       <div className='admin-page__right-section'>
         <div className='routes-dropdown'>
-          <button className='routes-dropdown__btn' onClick={toggleVisibility}><span>Выберите опцию</span></button>
+          <button
+            className='routes-dropdown__btn dropdown__btn'
+            onClick={toggleVisibility}
+          >
+            <span>{activeName}</span>
+          </button>
           {isVisible && (
             <div className='routes-dropdown__content'>
-              {sections.map((section, index) => (
+              {Object.entries(sections).map((section, index) => (
                 <Link
-                  to={section.href}
+                  to={section[0]}
                   key={index}
                   onClick={toggleVisibility}
-                >{section.name}</Link>
+                >{section[1]}</Link>
               ))}
             </div>
           )}

@@ -23,8 +23,8 @@ export default function ConnectionComponent() {
     <div className="connection-component">
       <div className="connection-window">
         <div className="dropdown-container">
-          <div className="dropdown-wrapper">
-            <select ref={selectedPolygonRef} className="dropdown">
+          <div className="dropdown">
+            <select ref={selectedPolygonRef} className="dropdown__btn">
               {polygonOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
@@ -32,8 +32,8 @@ export default function ConnectionComponent() {
               ))}
             </select>
           </div>
-          <div className="dropdown-wrapper">
-            <select ref={selectedPolygon2Ref} className="dropdown">
+          <div className="dropdown">
+            <select ref={selectedPolygon2Ref} className="dropdown__btn">
               {polygonOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}

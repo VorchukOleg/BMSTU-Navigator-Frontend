@@ -23,18 +23,15 @@
 .routes-dropdown {
   display: inline-block;
   font-size: 14px;
-  padding-top: 15px;
+  margin-top: 15px;
+  height: auto;
   
   &__btn {
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-    background-position: 100%;
-    background-repeat: no-repeat;
-    background-size: 20px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-    padding: 8px 12px;
-    width: 152px;
+    transition: .3s;
+
+    &:hover {
+      background-color: #e2e2e2;
+    }
 
     span {
       margin-right: 10px;
@@ -43,14 +40,23 @@
 
   &__content {
     position: absolute;
-    min-width: 152px;
+    width: 152px;
     z-index: 1;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    margin-top: 5px;
 
     a {
+      transition: .3s;
       color: black;
       padding: 12px 0;
       text-decoration: none;
       display: block;
+      padding-left: 5px;
+
+      &:hover {
+        background-color: #e2e2e2;
+      }
     }
   }
 }
