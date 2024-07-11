@@ -11,7 +11,7 @@ export default function AdminPage() {
     {
       '/admin/editing':'Редактирование',
       '/admin/markup': 'Разметка',
-      '/admin/connection': 'Свзяывание',
+      '/admin/connection': 'Связывание',
       '/admin/settings': 'Настройки полигона',
     };
 
