@@ -48,7 +48,9 @@ export default function ConnectionComponent() {
           </button>
         </div>
       </div>
-      <div className='connection-component__list'></div>
+      <div className='connection-component__list'>
+          <ConnectionListComponent connections={connections} />
+      </div>
     </div>
   );
 };
