@@ -16,25 +16,27 @@ export default function SetCoordinate() {
 
   return (
     <div className='coordinate-section'>
-      {points.map((point, index) => (
-        <CoordinateRow
-          key={index}
-          xValue={point.x}
-          yValue={point.y}
-          onXChange={(e) => {
-            const newPoints = [...points];
-            newPoints[index].x = e.target.value;
-            setPoints(newPoints);
-          }}
-          onYChange={(e) => {
-            const newPoints = [...points];
-            newPoints[index].y = e.target.value;
-            setPoints(newPoints);
-          }}
-          onDelete={() => deletePoint(index)}
-          index={index}
-        />
-      ))}
+      <div className='coordinate-section__container'>
+        {points.map((point, index) => (
+          <CoordinateRow
+            key={index}
+            xValue={point.x}
+            yValue={point.y}
+            onXChange={(e) => {
+              const newPoints = [...points];
+              newPoints[index].x = e.target.value;
+              setPoints(newPoints);
+            }}
+            onYChange={(e) => {
+              const newPoints = [...points];
+              newPoints[index].y = e.target.value;
+              setPoints(newPoints);
+            }}
+            onDelete={() => deletePoint(index)}
+            index={index}
+          />
+        ))}
+      </div>
       <button className="coordinate-section__add-btn" onClick={addPoint}>Добавить</button>
     </div>
   );
