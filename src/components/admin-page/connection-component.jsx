@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ConnectionListComponent from './connection-list-component.jsx';
 import styles from '../../styles/connection-component.scss';
 
 export default function ConnectionComponent() {
@@ -9,6 +10,8 @@ export default function ConnectionComponent() {
     { value: 'polygon4', label: 'Полигон 4' },
     { value: 'polygon5', label: 'Полигон 5' },
   ]);
+
+  const connections = [];
 
   const handleCreateLink = () => {
     const selectedPolygon1 = selectedPolygonRef.current.value;

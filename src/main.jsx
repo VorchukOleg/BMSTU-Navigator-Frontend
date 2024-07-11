@@ -55,10 +55,6 @@ const router = createBrowserRouter([
         element: <ConnectionComponent />
       },
       {
-        path: 'connection',
-        element: <ConnectionListComponent />
-      },
-      {
         path: 'settings',
         element: <PolygonSettings />,
       },

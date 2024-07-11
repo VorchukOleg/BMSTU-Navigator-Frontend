@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from '../../styles/connection-list-component.scss';
 
-const ConnectionListComponent = ({ connections }) => {
+export default function ConnectionListComponent({connections}) {
   return (
     <div className="connection-list-component">
       <ul className="connection-list">
@@ -23,5 +23,3 @@ const ConnectionListComponent = ({ connections }) => {
     </div>
   );
 };
-
-export default ConnectionListComponent;
