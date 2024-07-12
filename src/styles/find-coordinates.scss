@@ -1,0 +1,27 @@
+.scheme {
+    position: absolute;
+}
+  
+.scheme svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+}
+
+.img_and_scheme{
+    display: flex;
+    justify-content: center;
+}
+
+#pageContent{
+    width: 100%;
+    min-height: 100vh;
+    margin: 10vh auto;
+}
+
+#appCode{
+    width: 100%;
+    margin: 10vh auto;
+}

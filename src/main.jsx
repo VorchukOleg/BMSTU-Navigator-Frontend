@@ -16,7 +16,7 @@ import ErrorPage from './routes/error.jsx';
 import ConnectionComponent from './components/admin-page/connection-component.jsx';
 import SetCoordinate from './components/admin-page/set-coordinate.jsx';
 import PolygonSettings from './components/admin-page/polygon-settings.jsx';
-import ConnectionListComponent from './components/admin-page/connection-list-component.jsx';
+import FindCoordinates from './components/admin-page/find-coordinates.jsx';
 
 const router = createBrowserRouter([
   {
@@ -57,6 +57,10 @@ const router = createBrowserRouter([
       {
         path: 'settings',
         element: <PolygonSettings />,
+      },
+      {
+        path: 'findCoords',
+        element: <FindCoordinates />,
       },
     ],
   },
