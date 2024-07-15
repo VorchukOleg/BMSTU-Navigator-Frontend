@@ -1,8 +1,8 @@
-.scheme {
+.markup-scheme {
     position: absolute;
 }
   
-.scheme svg {
+.markup-scheme svg {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -25,3 +25,22 @@
     width: 100%;
     margin: 10vh auto;
 }
+
+#image{
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    margin: 25px auto;
+    padding: 10px 0;
+    background-color: lightgray;
+    border:4px dotted gray;
+}
+
+.imageInputForm {
+    display: block;
+    margin-top: 0em;
+    unicode-bidi: isolate;
+    margin-block-end: 1em;
+    text-align: center;
+}
+

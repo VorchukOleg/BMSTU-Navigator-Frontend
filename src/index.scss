@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+img, video {
+  max-width: none;
+}
+
 .scheme_container {
   display: flex;
   justify-content: center;

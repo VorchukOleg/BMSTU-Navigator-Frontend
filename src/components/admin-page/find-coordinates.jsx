@@ -8,6 +8,7 @@ export default function FindCoordinates() {
     const [currentImageHeight, setCurrentImageHeight] = useState(0);
     const imgRef = useRef(null); // Ref для доступа к изображению
     const cursPosRef = useRef(null);
+    const imgAndSchemeRef = useRef(null);
     const schemeSvgRef = useRef(null); // Ref для доступа к SVG схеме
 
     useEffect(() => {
@@ -15,15 +16,29 @@ export default function FindCoordinates() {
         const img = imgRef.current;
         const schemeSvg = schemeSvgRef.current;
         const cursPos = cursPosRef.current;
+        const imgAndScheme = imgAndSchemeRef.current;
+
 
         const innerWidth = img.clientWidth;
         const innerHeight = img.clientHeight;
 
+        console.log(currentImageWidth);
+        console.log(currentImageHeight);
+
+        console.log(innerWidth);
+        console.log(innerHeight);
+
         setCurrentImageWidth(innerWidth);
         setCurrentImageHeight(innerHeight);
 
+        console.log(currentImageWidth);
+        console.log(currentImageHeight);
+
         schemeSvg.style.width = `${innerWidth}px`;
         schemeSvg.style.height = `${innerHeight}px`;
+
+        imgAndScheme.style.width = `${innerWidth}px`;
+        //imgAndScheme.style.height = `${innerHeight}px`;
 
         cursPos.style.display = 'block';
 
@@ -46,14 +61,14 @@ export default function FindCoordinates() {
     return(
         <div id="pageContent">
             <div id="appCode">
-                <form action="" method="POST" enctype="multipart/form-data">
+                <form action="" className='imageInputForm' method="POST" enctype="multipart/form-data">
                     <input id="image" type="file" onChange={handleImageChange} />
                 </form>
 
-                <div className="img_and_scheme">
-                    <img id="show_image" src={imageSrc} alt="Uploaded" ref={imgRef} />
+                <div className="img_and_scheme" ref={imgAndSchemeRef}>
+                    <img id="show_image" src={imageSrc} ref={imgRef} />
         
-                    <div className="scheme" ref={schemeSvgRef}>
+                    <div className="markup-scheme" ref={schemeSvgRef}>
                         <svg id="svg">
                             <g id="floor">
                                 <polygon points="442,217,528,217,528,259,442,259" className="isElevatorOrStairs" id="bp_id_3e5aa691-1970-4f8d-90ea-1df4232cb4e2"></polygon>
@@ -63,7 +78,7 @@ export default function FindCoordinates() {
                 </div>
 
                 <div className="cursorPosition" ref={cursPosRef}>
-                    <CursorPosition currentImageWidth={600} currentImageHeight={600} schemeSvgRef={schemeSvgRef} />
+                    <CursorPosition currentImageWidth={currentImageWidth} currentImageHeight={currentImageHeight} schemeSvgRef={schemeSvgRef} />
                 </div>
                 
                 <div id="pointFieldsContainer"></div>
