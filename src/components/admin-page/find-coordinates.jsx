@@ -13,35 +13,28 @@ export default function FindCoordinates() {
 
     useEffect(() => {
         if (imgRef.current && schemeSvgRef.current) {
-        const img = imgRef.current;
-        const schemeSvg = schemeSvgRef.current;
-        const cursPos = cursPosRef.current;
-        const imgAndScheme = imgAndSchemeRef.current;
+            const cursPos = cursPosRef.current;
+            const img = imgRef.current;
+            const schemeSvg = schemeSvgRef.current;
+            const imgAndScheme = imgAndSchemeRef.current;
 
+            const innerWidth = img.clientWidth;
+            const innerHeight = img.clientHeight;
 
-        const innerWidth = img.clientWidth;
-        const innerHeight = img.clientHeight;
+            console.log('innerWidth=', innerWidth);
+            console.log('innerHeight=', innerHeight);
 
-        console.log(currentImageWidth);
-        console.log(currentImageHeight);
+            setCurrentImageWidth(innerWidth);
+            setCurrentImageHeight(innerHeight);
 
-        console.log(innerWidth);
-        console.log(innerHeight);
+            console.log('currentImageWidth=', currentImageWidth);
+            console.log('currentImageHeight=', currentImageHeight);
 
-        setCurrentImageWidth(innerWidth);
-        setCurrentImageHeight(innerHeight);
+            schemeSvg.style.width = `${innerWidth}px`;
+            schemeSvg.style.height = `${innerHeight}px`;
 
-        console.log(currentImageWidth);
-        console.log(currentImageHeight);
-
-        schemeSvg.style.width = `${innerWidth}px`;
-        schemeSvg.style.height = `${innerHeight}px`;
-
-        imgAndScheme.style.width = `${innerWidth}px`;
-        //imgAndScheme.style.height = `${innerHeight}px`;
-
-        cursPos.style.display = 'block';
-
+            imgAndScheme.style.width = `${innerWidth}px`;
+            cursPos.style.display = 'block';
         }
     }, [imageSrc]);
 
@@ -51,12 +44,18 @@ export default function FindCoordinates() {
         if (!file) return;
 
         const reader = new FileReader();
-        reader.onload = () => {
-        setImageSrc(reader.result);
-        };
-        reader.readAsDataURL(file);
-    };
 
+        const loadImage = new Promise((resolve) => {
+            reader.onload = () => {
+                setImageSrc(reader.result);
+                console.log('Image loaded');
+                resolve();
+            };
+            reader.readAsDataURL(file);
+        });
+
+        await loadImage;
+    };
 
     return(
         <div id="pageContent">
