@@ -1,0 +1,9 @@
+/* styles.css */
+input:focus {
+  outline: none; /* Убираем стандартное выделение */
+}
+
+input.active {
+  border-color: red; /* Измените цвет границы на желаемый */
+  background-color: yellow; /* Измените фон на желаемый */
+}
