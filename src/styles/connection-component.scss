@@ -1,80 +1,73 @@
 .connection-component {
   display: flex;
-
-  &__addition {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #f2f2f2;
-    margin: 10px 15px;
-    padding: 15px;
-    width: 60%;
-  }
-
-  &__list {
-    width: 40%;
-  }
+  width: 100%;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.connection-window {
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 10px;
+.connection-component__addition {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 20px;
+  width: 60%; 
+}
+
+.connection-window {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 80%;
 }
 
 .dropdown-container {
   display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.dropdown {
-  display: flex;
+  flex-direction: column;
   align-items: center;
-  margin: 0 10px;
-
-  &__btn {
-    padding: 8px 12px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 150px;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right center;
-    background-size: 20px;
-    cursor: pointer;
-    background-color: white;
-    transition: .3s;
-
-    &:hover {
-      background-color: #e2e2e2;
-    }
-  }
+  margin-bottom: 15px;
 }
 
-.dropdown-label {
+.dropdown__search-bar {
+  width: 100%;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  margin-bottom: 5px;
+}
+
+.dropdown__btn {
+  width: 100%;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.error-message {
+  color: red;
   font-weight: bold;
-  margin-right: 10px;
+  margin-top: 10px;
+  text-align: center; 
 }
 
 .create-link-btn {
-  background-color: #DEE7FF;
+  padding: 5px 15px; /* Reduced button height */
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
+  background-color: #DEE7FF;
   color: #333;
   cursor: pointer;
-  font-size: 14px;
-  padding: 16px 20px;
+  transition: background-color 0.3s ease;
 }
 
 .create-link-btn:hover {
   background-color: #C0D2FF;
+}
+
+.connection-component__list {
+  width: 40%; /* Adjust width as needed */
+  margin-left: 20px; /* Create space between components */
 }

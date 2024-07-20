@@ -8,7 +8,7 @@ export default function ConnectionListComponent({ connections }) {
         {connections.length > 0 ? (
           connections.map((connection) => (
             <li key={connection.id}>
-              {connection.connection}
+              {connection.connection} {/* Display the entire connection string */}
             </li>
           ))
         ) : (
