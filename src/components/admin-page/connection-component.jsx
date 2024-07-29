@@ -20,6 +20,10 @@ export default function ConnectionComponent() {
     { value: 'elevator', label: 'Лифт' },
   ];
 
+  const [searchPolygon, setSearchPolygon] = useState('');
+  const [filteredConnections, setFilteredConnections] = useState([]);
+
+  // Define missing states
   const [polygon1FilterText, setPolygon1FilterText] = useState('');
   const [polygon2FilterText, setPolygon2FilterText] = useState('');
   const [filteredPolygon1Options, setFilteredPolygon1Options] = useState(polygonOptions);
@@ -39,7 +43,7 @@ export default function ConnectionComponent() {
       return;
     }
 
-    const newConnection = `${selectedPolygon1Value} - ${selectedPolygon2Value} | ${selectedConnectionType}`; // Include connection type
+    const newConnection = `${selectedPolygon1Value} - ${selectedPolygon2Value} | ${selectedConnectionType}`;
 
     const existingConnection = connections.find(
       (connection) => connection.connection === newConnection
@@ -82,10 +86,26 @@ export default function ConnectionComponent() {
     );
   };
 
+  const handleSearchChange = (event) => {
+    const newSearchText = event.target.value.toLowerCase();
+    setSearchPolygon(newSearchText);
+
+    if (newSearchText) {
+      setFilteredConnections(
+        connections.filter((connection) =>
+          connection.connection.toLowerCase().includes(newSearchText)
+        )
+      );
+    } else {
+      setFilteredConnections(connections); // Reset filtering when search is empty
+    }
+  };
+
   useEffect(() => {
     setFilteredPolygon1Options(polygonOptions);
     setFilteredPolygon2Options(polygonOptions);
-  }, [polygonOptions]);
+    setFilteredConnections(connections); // Initialize filteredConnections on mount
+  }, [polygonOptions, connections]);
 
   return (
     <div className="connection-component">
@@ -138,11 +158,18 @@ export default function ConnectionComponent() {
                 ))}
               </select>
             </div>
+            <div className="dropdown"> {/* Added search bar */}
+              <input
+                type="text"
+                className="dropdown__search-bar"
+                placeholder="Поиск связи"
+                value={searchPolygon}
+                onChange={handleSearchChange}
+              />
+            </div>
           </div>
           {errorMessage && (
-            <div className="error-message">
-              {errorMessage}
-            </div>
+            <div className="error-message">{errorMessage}</div>
           )}
           <button className="create-link-btn" onClick={handleCreateLink}>
             Создать связь
@@ -150,7 +177,7 @@ export default function ConnectionComponent() {
         </div>
       </div>
       <div className="connection-component__list">
-        <ConnectionListComponent connections={connections} />
+        <ConnectionListComponent connections={filteredConnections} />
       </div>
     </div>
   );

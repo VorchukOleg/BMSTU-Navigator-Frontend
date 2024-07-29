@@ -7,9 +7,7 @@ export default function ConnectionListComponent({ connections }) {
       <ul className="connection-list" style={{ overflowY: 'auto' }}>
         {connections.length > 0 ? (
           connections.map((connection) => (
-            <li key={connection.id}>
-              {connection.connection} {/* Display the entire connection string */}
-            </li>
+            <li key={connection.id}>{connection.connection}</li>
           ))
         ) : (
           <li className="empty-message">Нет созданных связей</li>
