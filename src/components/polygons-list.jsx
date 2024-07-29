@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { usePolygonContext } from './PolygonContext';
+import { usePolygonContext } from './polygon-context.jsx';
 
-const PolygonList = () => {
+export default function PolygonList() {
   const { polygons, deletePolygon } = usePolygonContext();
   const [arePolygonsVisible, setArePolygonsVisible] = useState(true);
 
@@ -18,15 +18,11 @@ const PolygonList = () => {
         </div>
       )) : null}
 
-      {/* Кнопка "Добавить полигон" */}
       <button onClick={handleAddPolygon}>Добавить новый полигон</button>
 
-      {/* Кнопка "свернуть"/"развернуть" */}
       <button onClick={() => setArePolygonsVisible(!arePolygonsVisible)}>
         {arePolygonsVisible ? 'Свернуть' : 'Развернуть'}
       </button>
     </div>
   );
 };
-
-export default PolygonList;

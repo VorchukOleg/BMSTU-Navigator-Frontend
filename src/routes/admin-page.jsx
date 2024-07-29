@@ -4,6 +4,9 @@ import {
   Outlet,
   useLocation
 } from 'react-router-dom';
+import PolygonProvider from '../components/polygon-context.jsx';
+import Header from '../components/header.jsx';
+import PolygonList from '../components/polygons-list.jsx';
 import styles from '../styles/admin-page.scss';
 
 export default function AdminPage() {
@@ -51,6 +54,10 @@ export default function AdminPage() {
             </div>
           )}
         </div>
+        <PolygonProvider>
+          <Header />
+          <PolygonList />
+        </PolygonProvider>
       </div>
     </div>
   );

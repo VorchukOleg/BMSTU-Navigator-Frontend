@@ -4,15 +4,15 @@ const PolygonContext = createContext();
 
 export const usePolygonContext = () => useContext(PolygonContext);
 
-export const PolygonProvider = ({ children }) => {
+export default function PolygonProvider({children}) {
   const [polygons, setPolygons] = useState([
     'Полигоны 1',
     'Полигоны 2',
-        'Полигоны 3',
-        'Полигоны 4',
-        'Полигоны 5',
-        'Полигоны 6',
-        'Полигоны 7',
+    'Полигоны 3',
+    'Полигоны 4',
+    'Полигоны 5',
+    'Полигоны 6',
+    'Полигоны 7',
     'Полигоны 8'
   ]);
 
