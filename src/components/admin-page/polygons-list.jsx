@@ -17,17 +17,13 @@ export default function PolygonsList() {
     'Полигоны 8'
   ]);
 
-  const addPolygon = (newPolygon) => {
-    setPolygons([...polygons, newPolygon]);
+  const addPolygon = () => {
+    setPolygons([...polygons, '']);
   };
 
   const deletePolygon = (indexToDelete) => {
     const newPolygons = polygons.filter((_, index) => index !== indexToDelete);
     setPolygons(newPolygons);
-  };
-
-  const handleAddPolygon = () => {
-    // Функция для добавления нового полигона
   };
 
   const savePolygon = (ev) => {
@@ -62,7 +58,7 @@ export default function PolygonsList() {
         ))}
         <button
           className='btn-success polygons-list__add-btn'
-          onClick={handleAddPolygon}
+          onClick={addPolygon}
         >
             Добавить новый полигон
         </button>

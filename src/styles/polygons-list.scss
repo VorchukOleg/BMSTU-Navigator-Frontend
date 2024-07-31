@@ -5,6 +5,8 @@
   background-color: #cfd8ec;
   padding: 10px;
   margin-top: 20px;
+  height: 50vh;
+  overflow-y: auto;
 
   &__title {
     display: flex;
