@@ -130,3 +130,10 @@ label:first-child a {
 label:last-child a {
   border-radius: 0 0.375em 0.375em 0;
 }
+
+.btn-success {
+  background-color: #b9e28c;
+  border-radius: 8px;
+  color: #000;
+  padding: 10px 16px;
+}

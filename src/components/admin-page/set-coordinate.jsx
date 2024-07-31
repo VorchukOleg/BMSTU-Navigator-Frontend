@@ -37,7 +37,7 @@ export default function SetCoordinate() {
           />
         ))}
       </div>
-      <button className="coordinate-section__add-btn" onClick={addPoint}>Добавить</button>
+      <button className="btn-success" onClick={addPoint}>Добавить</button>
     </div>
   );
 }

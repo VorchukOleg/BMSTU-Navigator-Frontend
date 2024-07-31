@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
+import styles from '../../styles/polygons-list.scss';
 
 const PolygonContext = createContext();
 
@@ -29,22 +30,42 @@ export default function PolygonsList() {
     // Функция для добавления нового полигона
   };
 
+  const savePolygon = (ev) => {
+    //Функция для сохранения полигона при изменении input
+    console.log(ev.target.value);
+  };
+
   return (
     <PolygonContext.Provider value={{ polygons, addPolygon, deletePolygon }}>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px', width: '100%' }}>
+      <div className='polygons-list'>
+        <div className='polygons-list__title'>
           Список полигонов:
         </div>
         {polygons.map((polygon, index) => (
-          <div
-            key={index}
-            style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px', width: '100%' }}
-          >
-            {polygon}
-            <button onClick={() => deletePolygon(index)}>Удалить</button>
+          <div key={index} className='polygons-list__element'>
+            <input
+              className='polygons-list__element--input'
+              value={polygon}
+              onChange={savePolygon}
+            ></input>
+            <button
+        className='polygons-list__element--btn'
+        onClick={() => deletePolygon(index)}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 28 28">
+          <path fillRule="evenodd" d="M6.366 6.366a1.25 1.25 0 0 1 1.768 0L14 12.232l5.866-5.866a1.25 1.25 0 0 1 1.768
+            1.768L15.768 14l5.866 5.866a1.25 1.25 0 0 1-1.768 1.768L14 15.768l-5.866 5.866a1.25 1.25 0
+            0 1-1.768-1.768L12.232 14 6.366 8.134a1.25 1.25 0 0 1 0-1.768Z" clipRule="evenodd"/>\
+        </svg>
+      </button>
           </div>
         ))}
-        <button onClick={handleAddPolygon}>Добавить новый полигон</button>
+        <button
+          className='btn-success polygons-list__add-btn'
+          onClick={handleAddPolygon}
+        >
+            Добавить новый полигон
+        </button>
       </div>
     </PolygonContext.Provider>
   );
