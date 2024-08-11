@@ -11,12 +11,16 @@ import Building, {
   action as buildingAction,
 } from './routes/building.jsx';
 import Scheme, {loader as schemeLoader} from './routes/scheme.jsx';
-import AdminPage from './routes/admin-page.jsx';
+import AdminPage, {loader as adminLoader} from './routes/admin-page.jsx';
 import ErrorPage from './routes/error.jsx';
 import ConnectionComponent from './components/admin-page/connection-component.jsx';
 import SetCoordinate from './components/admin-page/set-coordinate.jsx';
 import PolygonSettings from './components/admin-page/polygon-settings.jsx';
 import FindCoordinates from './components/admin-page/find-coordinates.jsx';
+import ajax from './modules/ajax.js';
+import { API_ROUTES } from './config.js';
+
+ajax.initialize(API_ROUTES);
 
 const router = createBrowserRouter([
   {
@@ -45,6 +49,7 @@ const router = createBrowserRouter([
   {
     path: '/admin',
     element: <AdminPage />,
+    loader: adminLoader,
     children: [
       {
         path: 'editing',
