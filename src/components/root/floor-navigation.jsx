@@ -2,9 +2,15 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 // eslint-disable-next-line react/prop-types
-export function FloorNavigation({floors, pathRender}){
+export default function FloorNavigation({floors, floorsToDelete, buildLink, pathRender}){
   const newFloors = Object(floors);
-  delete newFloors[0];
+
+  newFloors.map((val, ind) => {
+    // eslint-disable-next-line react/prop-types
+    if(!val || floorsToDelete.indexOf(val.floorNumber) != -1) {
+      delete newFloors[ind];
+    }
+  });
 
   return (
     <div className="fieldset mt-8">
@@ -12,7 +18,7 @@ export function FloorNavigation({floors, pathRender}){
         return (
           <label key={floor.id}>
             <NavLink
-              to={`floor/${floor.floorNumber}`}
+              to={buildLink(floor.floorNumber)}
               className={({ isActive }) => isActive
                 ? (floor?.selected && pathRender)
                   ? 'floor_btn floor_btn--active selected_floor_text'
