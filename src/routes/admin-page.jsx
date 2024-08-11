@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {
   Link,
   Outlet,
+  useLoaderData,
   useLocation
 } from 'react-router-dom';
 import PolygonsList from '../components/admin-page/polygons-list.jsx';
@@ -9,16 +10,18 @@ import styles from '../styles/admin-page.scss';
 import ajax from '../modules/ajax.js';
 import { API_ROUTES } from '../config.js';
 
-export async function loader() {
-  const url = API_ROUTES.ADMIN_DATA();
+export async function loader({request}) {
+  const url = new URL(request.url);
+  const buildngCode = url.searchParams.get('building');
+
   ajax.get(
-    API_ROUTES.ADMIN_DATA(),
+    API_ROUTES.ADMIN_DATA(buildngCode),
     (data) => {
       console.log(data);
     }
   );
 
-  return null;
+  return {buildngCode};
 }
 
 export default function AdminPage() {
@@ -29,6 +32,8 @@ export default function AdminPage() {
       '/admin/connection': 'Связывание Технические работы',
       '/admin/settings': 'Настройки полигона',
     };
+
+  const {buildingCode} = useLoaderData();
 
   const location = useLocation();
   const activeName = sections[location.pathname];
@@ -58,7 +63,7 @@ export default function AdminPage() {
             <div className='routes-dropdown__content'>
               {Object.entries(sections).map((section, index) => (
                 <Link
-                  to={section[0]}
+                  to={`${section[0]}?building=${buildingCode}`}
                   key={index}
                   onClick={toggleVisibility}
                 >{section[1]}</Link>

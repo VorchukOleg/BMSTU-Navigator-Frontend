@@ -22,5 +22,6 @@ export const API_ROUTES = {
   GET_FLOOR_DATA: (floorId) =>
     `${API_HOST}/floors/get_all?floor_uuid=${floorId}`,
   GET_PATH: (from, to) => `${API_HOST}/get_path?from=${from}&to=${to}`,
-  ADMIN_DATA: () => `${API_HOST}/admin_data/8250b9ba-bc0d-4d2f-abf7-d91265e89050`,
+  ADMIN_DATA: (buildingCode) =>
+    `${API_HOST}/admin_data/${BUILDING_IDS[buildingCode]}`,
 };
