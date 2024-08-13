@@ -6,7 +6,7 @@ import {
   useLocation
 } from 'react-router-dom';
 import PolygonsList from '../components/admin-page/polygons-list.jsx';
-import FloorNavigation from '../components/root/floor-navigation.jsx';
+import FloorNavigation from '../components/shared/floor-navigation.jsx';
 import styles from '../styles/admin-page.scss';
 import ajax from '../modules/ajax.js';
 import { API_ROUTES, BUILDING_NAMES } from '../config.js';
@@ -76,9 +76,8 @@ export default function AdminPage() {
     }
   };
 
-  const [pathRender, setPathRender] = useState(false);
   const buildFloorLink = (floorNum) => {
-    return `${location.pathname}?building=${buildingCode}&?floor=${floorNum}`;
+    return `${location.pathname}?building=${buildingCode}&floor=${floorNum}`;
   };
 
   return (
@@ -127,8 +126,7 @@ export default function AdminPage() {
             </div>
           )}
         </div>
-        <FloorNavigation floors={floors}
-          floorsToDelete={[111, 222]} buildLink={buildFloorLink} pathRender={pathRender} />
+        <FloorNavigation floors={floors} buildLink={buildFloorLink} />
         <PolygonsList />
       </div>
     </div>

@@ -8,7 +8,7 @@ import {
 import { BUILDING_NAMES } from '../config.js';
 import { getAllRooms, getFloorNumbersAndUUIDs,getPath } from '../requests/building-data';
 import { markFloors, savePathUUIDs } from '../modules/path_builder.js';
-import FloorNavigation from '../components/root/floor-navigation.jsx';
+import FloorNavigation from '../components/shared/floor-navigation.jsx';
 import RoomSelectors from '../components/root/room-selectors.jsx';
 
 export async function loader({params}) {
@@ -42,7 +42,7 @@ export default function Building() {
   const [pathRender, setPathRender] = useState(false);
 
   const buildFloorLink = (floorNum) => {
-    return `floor/${floorNum}`;
+    return `/${buildingCode}/floor/${floorNum}`;
   };
 
   return (
@@ -50,7 +50,7 @@ export default function Building() {
       <h1 className="mt-4 text-3xl text-center font-bold tracking-tight text-gray-900 sm:text-5xl">
         {BUILDING_NAMES[buildingCode]}
       </h1>
-      <FloorNavigation floors={floors} floorsToDelete={[0]} buildLink={buildFloorLink} pathRender={pathRender} />
+      <FloorNavigation floors={floors} buildLink={buildFloorLink} pathRender={pathRender} />
       <Form
         method="post"
         id="route-form"
