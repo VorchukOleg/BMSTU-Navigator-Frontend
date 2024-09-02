@@ -127,7 +127,7 @@ export default function AdminPage() {
           )}
         </div>
         <FloorNavigation floors={floors} buildLink={buildFloorLink} />
-        <PolygonsList />
+        <PolygonsList currentFloor={floorNum} />
       </div>
     </div>
   );
