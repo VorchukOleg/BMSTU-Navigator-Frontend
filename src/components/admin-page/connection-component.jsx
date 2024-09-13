@@ -1,15 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import ConnectionListComponent from './connection-list-component.jsx';
 import styles from '../../styles/connection-component.scss';
+import { BUILDING_PROPERITES } from '../../routes/admin-page.jsx';
 
 export default function ConnectionComponent() {
-  const [polygonOptions, setPolygonOptions] = useState([
-    { value: 'polygon1', label: 'Полигон 1' },
-    { value: 'polygon2', label: 'Полигон 2' },
-    { value: 'polygon3', label: 'Полигон 3' },
-    { value: 'polygon4', label: 'Полигон 4' },
-    { value: 'polygon5', label: 'Полигон 5' },
-  ]);
   const [connections, setConnections] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedConnectionType, setSelectedConnectionType] = useState('');
@@ -23,11 +17,8 @@ export default function ConnectionComponent() {
   const [searchPolygon, setSearchPolygon] = useState('');
   const [filteredConnections, setFilteredConnections] = useState([]);
 
-  // Define missing states
-  const [polygon1FilterText, setPolygon1FilterText] = useState('');
-  const [polygon2FilterText, setPolygon2FilterText] = useState('');
-  const [filteredPolygon1Options, setFilteredPolygon1Options] = useState(polygonOptions);
-  const [filteredPolygon2Options, setFilteredPolygon2Options] = useState(polygonOptions);
+  // No need for separate filter states for each dropdown
+  const [filteredPolygonOptions, setFilteredPolygonOptions] = useState([]);
 
   const handleCreateLink = () => {
     const selectedPolygon1Value = selectedPolygon1Ref.current.value;
@@ -70,22 +61,6 @@ export default function ConnectionComponent() {
   const selectedPolygon1Ref = React.createRef();
   const selectedPolygon2Ref = React.createRef();
 
-  const handlePolygon1FilterChange = (event) => {
-    const newFilterText = event.target.value.toLowerCase();
-    setPolygon1FilterText(newFilterText);
-    setFilteredPolygon1Options(
-      polygonOptions.filter((option) => option.label.toLowerCase().includes(newFilterText))
-    );
-  };
-
-  const handlePolygon2FilterChange = (event) => {
-    const newFilterText = event.target.value.toLowerCase();
-    setPolygon2FilterText(newFilterText);
-    setFilteredPolygon2Options(
-      polygonOptions.filter((option) => option.label.toLowerCase().includes(newFilterText))
-    );
-  };
-
   const handleSearchChange = (event) => {
     const newSearchText = event.target.value.toLowerCase();
     setSearchPolygon(newSearchText);
@@ -102,10 +77,23 @@ export default function ConnectionComponent() {
   };
 
   useEffect(() => {
-    setFilteredPolygon1Options(polygonOptions);
-    setFilteredPolygon2Options(polygonOptions);
+    // Get all polygon displayed names from BUILDING_PROPERITES
+    const allPolygonOptions = Object.values(BUILDING_PROPERITES)
+  .flatMap((floor) => {
+    if (floor.basenodes && Array.isArray(floor.basenodes)) {
+      return [...floor.basenodes, ...floor.rooms];
+    }
+
+    return []; // Or handle the case as needed
+  })
+  .map((polygon) => ({
+    value: polygon.displayed_name,
+    label: polygon.displayed_name,
+  }));
+
+    setFilteredPolygonOptions(allPolygonOptions);
     setFilteredConnections(connections); // Initialize filteredConnections on mount
-  }, [polygonOptions, connections]);
+  }, [BUILDING_PROPERITES, connections]);
 
   return (
     <div className="connection-component">
@@ -117,11 +105,12 @@ export default function ConnectionComponent() {
                 type="text"
                 className="dropdown__search-bar"
                 placeholder="Поиск полигона"
-                value={polygon1FilterText}
-                onChange={handlePolygon1FilterChange}
+                // No separate filter state needed
+                // value={polygon1FilterText}
+                // onChange={handlePolygon1FilterChange}
               />
               <select ref={selectedPolygon1Ref} className="dropdown__btn">
-                {filteredPolygon1Options.map((option) => (
+                {filteredPolygonOptions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
@@ -133,11 +122,12 @@ export default function ConnectionComponent() {
                 type="text"
                 className="dropdown__search-bar"
                 placeholder="Поиск полигона"
-                value={polygon2FilterText}
-                onChange={handlePolygon2FilterChange}
+                // No separate filter state needed
+                // value={polygon2FilterText}
+                // onChange={handlePolygon2FilterChange}
               />
               <select ref={selectedPolygon2Ref} className="dropdown__btn">
-                {filteredPolygon2Options.map((option) => (
+                {filteredPolygonOptions.map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
