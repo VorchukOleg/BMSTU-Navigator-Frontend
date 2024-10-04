@@ -21,5 +21,8 @@ export const API_ROUTES = {
     `${API_HOST}/get_all_rooms_in_the_building?uuid=${BUILDING_IDS[buildingCode]}`,
   GET_FLOOR_DATA: (floorId) =>
     `${API_HOST}/floors/get_all?floor_uuid=${floorId}`,
-  GET_PATH: (from, to) => `${API_HOST}/get_path?from=${from}&to=${to}`,
+  GET_PATH: (from, to) =>
+    `${API_HOST}/get_path?from=${from}&to=${to}`,
+  ADMIN_DATA: (buildingCode) =>
+    `${API_HOST}/admin_data/${BUILDING_IDS[buildingCode]}`,
 };

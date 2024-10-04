@@ -11,7 +11,7 @@ import {
   fontSizeProcessor,
   calculatePolygonWidthAndHeight,
 } from '../modules/calculate-poligon';
-import { PolygonTextElement } from '../components/polygon-text-element.jsx';
+import PolygonTextElement from '../components/shared/polygon-text-element.jsx';
 
 
 export async function loader({params}) {

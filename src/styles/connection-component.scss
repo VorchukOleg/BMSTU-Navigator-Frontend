@@ -1,0 +1,73 @@
+.connection-component {
+  display: flex;
+  width: 100%;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.connection-component__addition {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  width: 60%; 
+}
+
+.connection-window {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 80%;
+}
+
+.dropdown-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.dropdown__search-bar {
+  width: 100%;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  margin-bottom: 5px;
+}
+
+.dropdown__btn {
+  width: 100%;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
+  text-align: center; 
+}
+
+.create-link-btn {
+  padding: 5px 15px; /* Reduced button height */
+  border: none;
+  border-radius: 5px;
+  background-color: #DEE7FF;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.create-link-btn:hover {
+  background-color: #C0D2FF;
+}
+
+.connection-component__list {
+  width: 40%; /* Adjust width as needed */
+  margin-left: 20px; /* Create space between components */
+}

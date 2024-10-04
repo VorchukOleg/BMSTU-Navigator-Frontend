@@ -1,0 +1,64 @@
+.coordinate-section {
+  margin: 10px 15px;
+  background-color: #cfd8ec;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  &__element {
+    display: flex;
+    background-color: white;
+    border-radius: 10px;
+    width: fit-content;
+    min-width: 25%;
+    max-width: 50%;
+    margin-bottom: 15px;
+    margin-right: 7%;
+  }
+
+  &__container {
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+
+    &--inputs {
+      width: 90%;
+      display: flex;
+      margin: 10px;
+      margin-right: 0;
+    }
+
+    &--btn {
+      width: 10%;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    &--input-element {
+      width: auto;
+      padding: 10px;
+      background-color: #cfd8ec;
+      border-radius: 10px;
+
+      &:first-child {
+        margin-right: 10px;
+      }
+
+      input {
+        margin-left: 10px;
+        width: 100px;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        transition: .3s;
+
+        &:focus {
+          border-color: #000;
+          opacity: 0.8;
+        }
+      }
+    }
+  }
+}
