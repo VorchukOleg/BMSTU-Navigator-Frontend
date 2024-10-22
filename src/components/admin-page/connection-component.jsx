@@ -7,25 +7,84 @@ import { v4 as uuidv4 } from 'uuid';
 export default function ConnectionComponent() {
   const [connections, setConnections] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
-  const [currentFloor, setCurrentFloor] = useState(1); // Текущий этаж
-  const [searchPolygon, setSearchPolygon] = useState('');
+  const [currentFloor, setCurrentFloor] = useState(1);
+  const [searchPolygon1, setSearchPolygon1] = useState('');
+  const [searchPolygon2, setSearchPolygon2] = useState('');
+  const [searchConnection, setSearchConnection] = useState('');
   const [filteredConnections, setFilteredConnections] = useState([]);
   const [filteredPolygonOptions, setFilteredPolygonOptions] = useState([]);
 
-  const handleCreateLink = () => {
+  const selectedPolygon1Ref = React.createRef();
+  const selectedPolygon2Ref = React.createRef();
+
+  useEffect(() => {
+    const currentFloorProperties = BUILDING_PROPERITES[currentFloor];
+    if (currentFloorProperties) {
+      const floorPolygons = [...currentFloorProperties.basenodes, ...currentFloorProperties.rooms];
+      const filteredPolygonOptions = floorPolygons.map((polygon) => ({
+        value: polygon.uuid,
+        label: polygon.displayed_name,
+        coordinates: polygon.coordinates // Предполагаем, что координаты находятся в поле coordinates
+      }));
+      setFilteredPolygonOptions(filteredPolygonOptions);
+    } else {
+      console.error(`Нет данных для этажа ${currentFloor}`);
+      setFilteredPolygonOptions([]);
+    }
+  }, [currentFloor]);
+
+  useEffect(() => {
+    setFilteredConnections(connections);
+  }, [connections]);
+
+  const calculateManhattanDistance = (coords1, coords2) => {
+    return Math.abs(coords1.x - coords2.x) + Math.abs(coords1.y - coords2.y);
+  };
+
+  const calculateCenter = (coordinates) => {
+    const xValues = Object.values(coordinates).map(coord => parseFloat(coord.x));
+    const yValues = Object.values(coordinates).map(coord => parseFloat(coord.y));
+    
+    const centerX = (Math.min(...xValues) + Math.max(...xValues)) / 2;
+    const centerY = (Math.min(...yValues) + Math.max(...yValues)) / 2;
+
+    return { x: centerX, y: centerY };
+};
+
+const handleCreateLink = () => {
     const selectedPolygon1Value = selectedPolygon1Ref.current.value;
     const selectedPolygon2Value = selectedPolygon2Ref.current.value;
+
+    if (!selectedPolygon1Value || !selectedPolygon2Value) {
+      setErrorMessage('Пожалуйста, выберите оба полигона.');
+      return;
+    }
 
     if (selectedPolygon1Value === selectedPolygon2Value) {
       setErrorMessage('Пожалуйста, выберите разные полигоны для создания связи.');
       return;
     }
 
+    const polygon1 = filteredPolygonOptions.find(option => option.value === selectedPolygon1Value);
+    const polygon2 = filteredPolygonOptions.find(option => option.value === selectedPolygon2Value);
+
+    if (!polygon1 || !polygon2) {
+      setErrorMessage('Не удалось найти выбранные полигоны.');
+      return;
+    }
+
+    // Вычисляем центры полигонов
+    const center1 = calculateCenter(polygon1.coordinates);
+    const center2 = calculateCenter(polygon2.coordinates);
+
+    // Вычисляем манхэттенское расстояние между центрами
+    const distance = calculateManhattanDistance(center1, center2);
+
     const newConnection = {
       uuid: uuidv4(),
       basepoint_1_uuid: selectedPolygon1Value,
       basepoint_2_uuid: selectedPolygon2Value,
-      weight: 12345, // заглушка
+      weight: distance, // Используем расстояние как вес
       floor_number: currentFloor,
     };
 
@@ -42,77 +101,52 @@ export default function ConnectionComponent() {
       return;
     }
 
-    setConnections((prevConnections) => [...prevConnections, newConnection], () => {
-      console.log('Connections updated!');
-      setErrorMessage('');
-    });
+    setConnections((prevConnections) => [...prevConnections, newConnection]);
+    setErrorMessage('');
 
+    // Alert с информацией о созданной связи
+    alert(`Создана связь:\n${JSON.stringify(newConnection, null, 2)}`);
+
+    // Сброс значений в выпадающих списках
     selectedPolygon1Ref.current.selectedIndex = 0;
     selectedPolygon2Ref.current.selectedIndex = 0;
-  };
-
-  const handleSaveConnections = () => {
-    const newConnections = connections.filter((connection) => !BUILDING_PROPERITES[currentFloor].connections.includes(connection));
-    const newBuildingProperties = { ...BUILDING_PROPERITES };
-    newBuildingProperties[currentFloor].connections = [...newBuildingProperties[currentFloor].connections, ...newConnections];
-    BUILDING_PROPERITES[currentFloor].connections = newBuildingProperties[currentFloor].connections;
-    alert('Связи успешно сохранены!');
-  };
+};
 
   const handleSearchChange = (event) => {
     const newSearchText = event.target.value.toLowerCase();
-    setSearchPolygon(newSearchText);
-
-    if (newSearchText) {
-      setFilteredConnections(
-        connections.filter((connection) =>
-          connection.basepoint_1_uuid.toLowerCase().includes(newSearchText) ||
-          connection.basepoint_2_uuid.toLowerCase().includes(newSearchText)
-        )
-      );
+    if (event.target.placeholder === "Поиск связи") {
+      setSearchConnection(newSearchText);
+    } else if (event.target.placeholder === "Поиск полигона 1") {
+      setSearchPolygon1(newSearchText);
     } else {
-      setFilteredConnections(connections);
+      setSearchPolygon2(newSearchText);
     }
   };
 
-  const selectedPolygon1Ref = React.createRef();
-  const selectedPolygon2Ref = React.createRef();
-
   useEffect(() => {
-    const currentFloorProperties = BUILDING_PROPERITES[currentFloor];
-    if (currentFloorProperties) {
-      const floorPolygons = [...currentFloorProperties.basenodes, ...currentFloorProperties.rooms];
-      const filteredPolygonOptions = floorPolygons.map((polygon) => ({
-        value: polygon.displayed_name,
-        label: polygon.displayed_name,
-      }));
-      setFilteredPolygonOptions(filteredPolygonOptions);
-    } else {
-      setFilteredPolygonOptions([]);
-    }
-  }, [BUILDING_PROPERITES, currentFloor]);
-
-  useEffect(() => {
-    setFilteredConnections(connections);
-  }, [connections]);
-
-  const [searchPolygon1, setSearchPolygon1] = useState('');
-  const [searchPolygon2, setSearchPolygon2] = useState('');
+    // Фильтрация связей на основе текста поиска
+    const filtered = connections.filter((connection) =>
+      connection.basepoint_1_uuid.toLowerCase().includes(searchConnection) ||
+      connection.basepoint_2_uuid.toLowerCase().includes(searchConnection)
+    );
+    setFilteredConnections(filtered);
+  }, [connections, searchConnection]);
 
   return (
     <div className="connection-component">
       <div className="connection-component__addition">
         <div className="connection-window">
           <div className="dropdown-container">
-          <div className="dropdown"> {/* First dropdown */}
+            <div className="dropdown"> {/* Первый выпадающий список */}
               <input
                 type="text"
                 className="dropdown__search-bar"
-                placeholder="Поиск полигона"
+                placeholder="Поиск полигона 1"
                 value={searchPolygon1}
-                onChange={(e) => setSearchPolygon1(e.target.value)}
+                onChange={handleSearchChange}
               />
               <select ref={selectedPolygon1Ref} className="dropdown__btn">
+                <option value="">Выберите полигон 1</option>
                 {filteredPolygonOptions.filter((option) =>
                   option.label.toLowerCase().includes(searchPolygon1.toLowerCase())
                 ).map((option) => (
@@ -122,15 +156,16 @@ export default function ConnectionComponent() {
                 ))}
               </select>
             </div>
-            <div className="dropdown"> {/* Second dropdown */}
+            <div className="dropdown"> {/* Второй выпадающий список */}
               <input
                 type="text"
                 className="dropdown__search-bar"
-                placeholder="Поиск полигона"
+                placeholder="Поиск полигона 2"
                 value={searchPolygon2}
-                onChange={(e) => setSearchPolygon2(e.target.value)}
+                onChange={handleSearchChange}
               />
               <select ref={selectedPolygon2Ref} className="dropdown__btn">
+                <option value="">Выберите полигон 2</option>
                 {filteredPolygonOptions.filter((option) =>
                   option.label.toLowerCase().includes(searchPolygon2.toLowerCase())
                 ).map((option) => (
@@ -140,14 +175,12 @@ export default function ConnectionComponent() {
                 ))}
               </select>
             </div>
-            <div className="dropdown">
-            </div>
-            <div className="dropdown">
+            <div className="dropdown"> {/* Поле для поиска связей */}
               <input
                 type="text"
                 className="dropdown__search-bar"
                 placeholder="Поиск связи"
-                value={searchPolygon}
+                value={searchConnection}
                 onChange={handleSearchChange}
               />
             </div>
@@ -158,13 +191,10 @@ export default function ConnectionComponent() {
           <button className="create-link-btn" onClick={handleCreateLink}>
             Создать связь
           </button>
-          <button className="save-btn" onClick={handleSaveConnections}>
-            Сохранить
-          </button>
         </div>
       </div>
       <div className="connection-component__list">
-        <ConnectionListComponent connections={filteredConnections} />
+        <ConnectionListComponent connections={filteredConnections} polygonOptions={filteredPolygonOptions} />
       </div>
     </div>
   );
