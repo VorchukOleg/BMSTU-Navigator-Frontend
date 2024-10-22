@@ -24,7 +24,7 @@ export default function ConnectionComponent() {
       const filteredPolygonOptions = floorPolygons.map((polygon) => ({
         value: polygon.uuid,
         label: polygon.displayed_name,
-        coordinates: polygon.coordinates // Предполагаем, что координаты находятся в поле coordinates
+        coordinates: polygon.coordinates,
       }));
       setFilteredPolygonOptions(filteredPolygonOptions);
     } else {
@@ -44,14 +44,14 @@ export default function ConnectionComponent() {
   const calculateCenter = (coordinates) => {
     const xValues = Object.values(coordinates).map(coord => parseFloat(coord.x));
     const yValues = Object.values(coordinates).map(coord => parseFloat(coord.y));
-    
+
     const centerX = (Math.min(...xValues) + Math.max(...xValues)) / 2;
     const centerY = (Math.min(...yValues) + Math.max(...yValues)) / 2;
 
     return { x: centerX, y: centerY };
-};
+  };
 
-const handleCreateLink = () => {
+  const handleCreateLink = () => {
     const selectedPolygon1Value = selectedPolygon1Ref.current.value;
     const selectedPolygon2Value = selectedPolygon2Ref.current.value;
 
@@ -73,18 +73,15 @@ const handleCreateLink = () => {
       return;
     }
 
-    // Вычисляем центры полигонов
     const center1 = calculateCenter(polygon1.coordinates);
     const center2 = calculateCenter(polygon2.coordinates);
-
-    // Вычисляем манхэттенское расстояние между центрами
     const distance = calculateManhattanDistance(center1, center2);
 
     const newConnection = {
       uuid: uuidv4(),
       basepoint_1_uuid: selectedPolygon1Value,
       basepoint_2_uuid: selectedPolygon2Value,
-      weight: distance, // Используем расстояние как вес
+      weight: distance,
       floor_number: currentFloor,
     };
 
@@ -110,7 +107,7 @@ const handleCreateLink = () => {
     // Сброс значений в выпадающих списках
     selectedPolygon1Ref.current.selectedIndex = 0;
     selectedPolygon2Ref.current.selectedIndex = 0;
-};
+  };
 
   const handleSearchChange = (event) => {
     const newSearchText = event.target.value.toLowerCase();
@@ -131,6 +128,35 @@ const handleCreateLink = () => {
     );
     setFilteredConnections(filtered);
   }, [connections, searchConnection]);
+
+  const handleSaveConnections = () => {
+    const currentFloorProperties = BUILDING_PROPERITES[currentFloor];
+  
+    if (!currentFloorProperties) {
+      setErrorMessage('Нет данных для текущего этажа.');
+      return;
+    }
+  
+    // Убедитесь, что connections инициализированы
+    if (!currentFloorProperties.connections) {
+      currentFloorProperties.connections = [];
+    }
+  
+    // Добавляем новые связи к существующим
+    currentFloorProperties.connections = [
+      ...currentFloorProperties.connections,
+      ...connections,
+    ];
+  
+    // Создаем строку для алерта с информацией о всех локально созданных связях
+    const connectionsAlert = connections.map(connection => 
+      `UUID: ${connection.uuid}, Полигон 1: ${connection.basepoint_1_uuid}, Полигон 2: ${connection.basepoint_2_uuid}, Вес: ${connection.weight}, Этаж: ${connection.floor_number}`
+    ).join('\n');
+  
+    // Уведомление о сохранении и вывод всех созданных связей
+    alert(`Связи успешно сохранены!\n\nСозданные связи:\n${connectionsAlert}`);
+    setErrorMessage('');
+  };
 
   return (
     <div className="connection-component">
@@ -190,6 +216,10 @@ const handleCreateLink = () => {
           )}
           <button className="create-link-btn" onClick={handleCreateLink}>
             Создать связь
+          </button>
+          {/* Добавляем кнопку для сохранения связей */}
+          <button className="save-data-btn" onClick={handleSaveConnections}>
+            Сохранить данные
           </button>
         </div>
       </div>
