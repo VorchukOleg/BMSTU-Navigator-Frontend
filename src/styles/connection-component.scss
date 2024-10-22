@@ -53,6 +53,20 @@
   text-align: center; 
 }
 
+.save-btn {
+  padding: 5px 15px; /* Reduced button height */
+  border: none;
+  border-radius: 5px;
+  background-color: #DEE7FF;
+  color: #333;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.save-btn:hover {
+  background-color: #C0D2FF;
+}
+
 .create-link-btn {
   padding: 5px 15px; /* Reduced button height */
   border: none;

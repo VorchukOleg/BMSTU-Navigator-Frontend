@@ -18,8 +18,7 @@ npm run build
 ```
 npm start
 ```
-После запуска сервера, перейдите по ссылке http://127.0.0.1:5000/admin_data/8250b9ba-bc0d-4d2f-abf7-d91265e89050
-
+После запуска сервера, перейдите по ссылке http://127.0.0.1:8008/admin/connection?building=RFH&floor=1
 ## Работа с БД
 Для работы с полигонами и связями, запустите бэкэнд, который скачивается по ссылке:
 https://github.com/VorchukOleg/BMSTU-Navigator/tree/develop

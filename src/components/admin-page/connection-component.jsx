@@ -2,22 +2,14 @@ import React, { useState, useEffect } from 'react';
 import ConnectionListComponent from './connection-list-component.jsx';
 import styles from '../../styles/connection-component.scss';
 import { BUILDING_PROPERITES } from '../../routes/admin-page.jsx';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function ConnectionComponent() {
   const [connections, setConnections] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
-  const [selectedConnectionType, setSelectedConnectionType] = useState('');
-
-  const connectionTypeOptions = [
-    { value: 'corridor', label: 'Коридор' },
-    { value: 'staircase', label: 'Лестница' },
-    { value: 'elevator', label: 'Лифт' },
-  ];
-
+  const [currentFloor, setCurrentFloor] = useState(1); // Текущий этаж
   const [searchPolygon, setSearchPolygon] = useState('');
   const [filteredConnections, setFilteredConnections] = useState([]);
-
-  // No need for separate filter states for each dropdown
   const [filteredPolygonOptions, setFilteredPolygonOptions] = useState([]);
 
   const handleCreateLink = () => {
@@ -29,15 +21,20 @@ export default function ConnectionComponent() {
       return;
     }
 
-    if (!selectedConnectionType) {
-      setErrorMessage('Пожалуйста, выберите тип связи.');
-      return;
-    }
-
-    const newConnection = `${selectedPolygon1Value} - ${selectedPolygon2Value} | ${selectedConnectionType}`;
+    const newConnection = {
+      uuid: uuidv4(),
+      basepoint_1_uuid: selectedPolygon1Value,
+      basepoint_2_uuid: selectedPolygon2Value,
+      weight: 12345, // заглушка
+      floor_number: currentFloor,
+    };
 
     const existingConnection = connections.find(
-      (connection) => connection.connection === newConnection
+      (connection) =>
+        (connection.basepoint_1_uuid === selectedPolygon1Value &&
+          connection.basepoint_2_uuid === selectedPolygon2Value) ||
+        (connection.basepoint_1_uuid === selectedPolygon2Value &&
+          connection.basepoint_2_uuid === selectedPolygon1Value)
     );
 
     if (existingConnection) {
@@ -45,21 +42,22 @@ export default function ConnectionComponent() {
       return;
     }
 
-    setConnections((prevConnections) => [
-      ...prevConnections,
-      { id: Math.random().toString(36).substring(2, 15), connection: newConnection },
-    ], () => {
+    setConnections((prevConnections) => [...prevConnections, newConnection], () => {
       console.log('Connections updated!');
       setErrorMessage('');
     });
 
     selectedPolygon1Ref.current.selectedIndex = 0;
     selectedPolygon2Ref.current.selectedIndex = 0;
-    setSelectedConnectionType(''); // Clear selected connection type
   };
 
-  const selectedPolygon1Ref = React.createRef();
-  const selectedPolygon2Ref = React.createRef();
+  const handleSaveConnections = () => {
+    const newConnections = connections.filter((connection) => !BUILDING_PROPERITES[currentFloor].connections.includes(connection));
+    const newBuildingProperties = { ...BUILDING_PROPERITES };
+    newBuildingProperties[currentFloor].connections = [...newBuildingProperties[currentFloor].connections, ...newConnections];
+    BUILDING_PROPERITES[currentFloor].connections = newBuildingProperties[currentFloor].connections;
+    alert('Связи успешно сохранены!');
+  };
 
   const handleSearchChange = (event) => {
     const newSearchText = event.target.value.toLowerCase();
@@ -68,49 +66,56 @@ export default function ConnectionComponent() {
     if (newSearchText) {
       setFilteredConnections(
         connections.filter((connection) =>
-          connection.connection.toLowerCase().includes(newSearchText)
+          connection.basepoint_1_uuid.toLowerCase().includes(newSearchText) ||
+          connection.basepoint_2_uuid.toLowerCase().includes(newSearchText)
         )
       );
     } else {
-      setFilteredConnections(connections); // Reset filtering when search is empty
+      setFilteredConnections(connections);
     }
   };
 
+  const selectedPolygon1Ref = React.createRef();
+  const selectedPolygon2Ref = React.createRef();
+
   useEffect(() => {
-    // Get all polygon displayed names from BUILDING_PROPERITES
-    const allPolygonOptions = Object.values(BUILDING_PROPERITES)
-  .flatMap((floor) => {
-    if (floor.basenodes && Array.isArray(floor.basenodes)) {
-      return [...floor.basenodes, ...floor.rooms];
+    const currentFloorProperties = BUILDING_PROPERITES[currentFloor];
+    if (currentFloorProperties) {
+      const floorPolygons = [...currentFloorProperties.basenodes, ...currentFloorProperties.rooms];
+      const filteredPolygonOptions = floorPolygons.map((polygon) => ({
+        value: polygon.displayed_name,
+        label: polygon.displayed_name,
+      }));
+      setFilteredPolygonOptions(filteredPolygonOptions);
+    } else {
+      setFilteredPolygonOptions([]);
     }
+  }, [BUILDING_PROPERITES, currentFloor]);
 
-    return []; // Or handle the case as needed
-  })
-  .map((polygon) => ({
-    value: polygon.displayed_name,
-    label: polygon.displayed_name,
-  }));
+  useEffect(() => {
+    setFilteredConnections(connections);
+  }, [connections]);
 
-    setFilteredPolygonOptions(allPolygonOptions);
-    setFilteredConnections(connections); // Initialize filteredConnections on mount
-  }, [BUILDING_PROPERITES, connections]);
+  const [searchPolygon1, setSearchPolygon1] = useState('');
+  const [searchPolygon2, setSearchPolygon2] = useState('');
 
   return (
     <div className="connection-component">
       <div className="connection-component__addition">
         <div className="connection-window">
           <div className="dropdown-container">
-            <div className="dropdown"> {/* First dropdown */}
+          <div className="dropdown"> {/* First dropdown */}
               <input
                 type="text"
                 className="dropdown__search-bar"
                 placeholder="Поиск полигона"
-                // No separate filter state needed
-                // value={polygon1FilterText}
-                // onChange={handlePolygon1FilterChange}
+                value={searchPolygon1}
+                onChange={(e) => setSearchPolygon1(e.target.value)}
               />
               <select ref={selectedPolygon1Ref} className="dropdown__btn">
-                {filteredPolygonOptions.map((option) => (
+                {filteredPolygonOptions.filter((option) =>
+                  option.label.toLowerCase().includes(searchPolygon1.toLowerCase())
+                ).map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
@@ -122,33 +127,22 @@ export default function ConnectionComponent() {
                 type="text"
                 className="dropdown__search-bar"
                 placeholder="Поиск полигона"
-                // No separate filter state needed
-                // value={polygon2FilterText}
-                // onChange={handlePolygon2FilterChange}
+                value={searchPolygon2}
+                onChange={(e) => setSearchPolygon2(e.target.value)}
               />
               <select ref={selectedPolygon2Ref} className="dropdown__btn">
-                {filteredPolygonOptions.map((option) => (
+                {filteredPolygonOptions.filter((option) =>
+                  option.label.toLowerCase().includes(searchPolygon2.toLowerCase())
+                ).map((option) => (
                   <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
                 ))}
               </select>
             </div>
-            <div className="dropdown"> {/* Added third dropdown */}
-              <select
-                value={selectedConnectionType}
-                onChange={(e) => setSelectedConnectionType(e.target.value)}
-                className="dropdown__btn"
-              >
-                <option value="">Выберите тип связи</option>
-                {connectionTypeOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+            <div className="dropdown">
             </div>
-            <div className="dropdown"> {/* Added search bar */}
+            <div className="dropdown">
               <input
                 type="text"
                 className="dropdown__search-bar"
@@ -163,6 +157,9 @@ export default function ConnectionComponent() {
           )}
           <button className="create-link-btn" onClick={handleCreateLink}>
             Создать связь
+          </button>
+          <button className="save-btn" onClick={handleSaveConnections}>
+            Сохранить
           </button>
         </div>
       </div>
