@@ -120,39 +120,48 @@ export default function ConnectionComponent() {
     }
   };
 
+  const polygonNameMap = React.useMemo(() => {
+    return filteredPolygonOptions.reduce((acc, option) => {
+      acc[option.value] = option.label.toLowerCase();
+      return acc;
+    }, {});
+  }, [filteredPolygonOptions]);
+
   useEffect(() => {
     // Фильтрация связей на основе текста поиска
-    const filtered = connections.filter((connection) =>
-      connection.basepoint_1_uuid.toLowerCase().includes(searchConnection) ||
-      connection.basepoint_2_uuid.toLowerCase().includes(searchConnection)
-    );
+    const filtered = connections.filter((connection) => {
+      const polygon1Name = polygonNameMap[connection.basepoint_1_uuid] || '';
+      const polygon2Name = polygonNameMap[connection.basepoint_2_uuid] || '';
+      
+      return polygon1Name.includes(searchConnection) || polygon2Name.includes(searchConnection);
+    });
     setFilteredConnections(filtered);
-  }, [connections, searchConnection]);
+  }, [connections, searchConnection, polygonNameMap]);
 
   const handleSaveConnections = () => {
     const currentFloorProperties = BUILDING_PROPERITES[currentFloor];
-  
+
     if (!currentFloorProperties) {
       setErrorMessage('Нет данных для текущего этажа.');
       return;
     }
-  
+
     // Убедитесь, что connections инициализированы
     if (!currentFloorProperties.connections) {
       currentFloorProperties.connections = [];
     }
-  
+
     // Добавляем новые связи к существующим
     currentFloorProperties.connections = [
       ...currentFloorProperties.connections,
       ...connections,
     ];
-  
+
     // Создаем строку для алерта с информацией о всех локально созданных связях
     const connectionsAlert = connections.map(connection => 
-      `UUID: ${connection.uuid}, Полигон 1: ${connection.basepoint_1_uuid}, Полигон 2: ${connection.basepoint_2_uuid}, Вес: ${connection.weight}, Этаж: ${connection.floor_number}`
+      `UUID: ${connection.uuid}, Полигон 1: ${polygonNameMap[connection.basepoint_1_uuid]}, Полигон 2: ${polygonNameMap[connection.basepoint_2_uuid]}, Вес: ${connection.weight}, Этаж: ${connection.floor_number}`
     ).join('\n');
-  
+
     // Уведомление о сохранении и вывод всех созданных связей
     alert(`Связи успешно сохранены!\n\nСозданные связи:\n${connectionsAlert}`);
     setErrorMessage('');
@@ -163,7 +172,7 @@ export default function ConnectionComponent() {
       <div className="connection-component__addition">
         <div className="connection-window">
           <div className="dropdown-container">
-            <div className="dropdown"> {/* Первый выпадающий список */}
+            <div className="dropdown">
               <input
                 type="text"
                 className="dropdown__search-bar"
@@ -182,7 +191,7 @@ export default function ConnectionComponent() {
                 ))}
               </select>
             </div>
-            <div className="dropdown"> {/* Второй выпадающий список */}
+            <div className="dropdown">
               <input
                 type="text"
                 className="dropdown__search-bar"
@@ -201,7 +210,7 @@ export default function ConnectionComponent() {
                 ))}
               </select>
             </div>
-            <div className="dropdown"> {/* Поле для поиска связей */}
+            <div className="dropdown">
               <input
                 type="text"
                 className="dropdown__search-bar"
@@ -217,7 +226,6 @@ export default function ConnectionComponent() {
           <button className="create-link-btn" onClick={handleCreateLink}>
             Создать связь
           </button>
-          {/* Добавляем кнопку для сохранения связей */}
           <button className="save-data-btn" onClick={handleSaveConnections}>
             Сохранить данные
           </button>
