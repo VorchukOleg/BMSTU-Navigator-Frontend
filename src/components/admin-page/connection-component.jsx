@@ -4,10 +4,9 @@ import styles from '../../styles/connection-component.scss';
 import { BUILDING_PROPERITES } from '../../routes/admin-page.jsx';
 import { v4 as uuidv4 } from 'uuid';
 
-export default function ConnectionComponent() {
+export default function ConnectionComponent({floorNum}) {
   const [connections, setConnections] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
-  const [currentFloor, setCurrentFloor] = useState(1);
   const [searchPolygon1, setSearchPolygon1] = useState('');
   const [searchPolygon2, setSearchPolygon2] = useState('');
   const [searchConnection, setSearchConnection] = useState('');
@@ -18,7 +17,7 @@ export default function ConnectionComponent() {
   const selectedPolygon2Ref = React.createRef();
 
   useEffect(() => {
-    const currentFloorProperties = BUILDING_PROPERITES[currentFloor];
+    const currentFloorProperties = BUILDING_PROPERITES[floorNum];
     if (currentFloorProperties) {
       const floorPolygons = [...currentFloorProperties.basenodes, ...currentFloorProperties.rooms];
       const filteredPolygonOptions = floorPolygons.map((polygon) => ({
@@ -28,10 +27,10 @@ export default function ConnectionComponent() {
       }));
       setFilteredPolygonOptions(filteredPolygonOptions);
     } else {
-      console.error(`Нет данных для этажа ${currentFloor}`);
+      console.error(`Нет данных для этажа ${floorNum}`);
       setFilteredPolygonOptions([]);
     }
-  }, [currentFloor]);
+  }, [floorNum]);
 
   useEffect(() => {
     setFilteredConnections(connections);
@@ -139,7 +138,7 @@ export default function ConnectionComponent() {
   }, [connections, searchConnection, polygonNameMap]);
 
   const handleSaveConnections = () => {
-    const currentFloorProperties = BUILDING_PROPERITES[currentFloor];
+    const currentFloorProperties = BUILDING_PROPERITES[floorNum];
 
     if (!currentFloorProperties) {
       setErrorMessage('Нет данных для текущего этажа.');

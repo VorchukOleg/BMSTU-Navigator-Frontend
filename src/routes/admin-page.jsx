@@ -49,7 +49,7 @@ export default function AdminPage() {
     {
       '/admin/editing':'Редактирование',
       '/admin/markup': 'Разметка',
-      '/admin/connection': 'Связывание Технические работы',
+      '/admin/connection': 'Связывание',
       '/admin/settings': 'Настройки полигона',
     };
 
@@ -85,7 +85,7 @@ export default function AdminPage() {
       <div className='admin-page__left-section'>
         <div className='building-plug'>
         </div>
-        <Outlet />
+        <Outlet context={{ floorNum }} />
       </div>
       <div className='admin-page__right-section'>
         <div className='routes-dropdown'>

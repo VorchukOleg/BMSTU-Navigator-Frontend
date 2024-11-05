@@ -25,6 +25,6 @@ export default function CursorPosition({currentImageWidth, currentImageHeight, s
   }, [currentImageWidth, currentImageHeight]);
 
     return(
-        <div></div>                
-    );
+        <div></div>
+    );  
 }
