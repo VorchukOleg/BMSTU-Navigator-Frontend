@@ -1,7 +1,7 @@
 .polygons-list {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   background-color: #cfd8ec;
   padding: 10px;
   margin-top: 20px;
@@ -12,31 +12,50 @@
     display: flex;
     justify-content: center;
     font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 1.1em;
   }
 
   &__element {
-    margin-top: 10px;
-    display: flex;
-
-    &--input {
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      margin-left: 10px;
-      padding: 5px;
-      transition: .3s;
-      width: 80%;
-    }
+    margin-bottom: 10px;
+    width: 100%;
 
     &--btn {
-      width: 20%;
-      display: flex;
-      justify-content: flex-end;
-      width: 10%;
-      align-items: center;
+      width: 100%;
+      padding: 8px 12px;
+      background-color: #ffffff;
+      border: 1px solid #a0a0a0;
+      border-radius: 5px;
+      text-align: left;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      font-size: 0.9em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      &:hover {
+        background-color: #e6e6e6;
+      }
+
+      &:active {
+        background-color: #d4d4d4;
+      }
     }
   }
 
   &__add-btn {
-    margin-top: 10px;
+    margin-top: 15px;
+    padding: 8px 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #45a049;
+    }
   }
 }
