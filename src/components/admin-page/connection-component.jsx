@@ -81,7 +81,7 @@ export default function ConnectionComponent({floorNum}) {
       basepoint_1_uuid: selectedPolygon1Value,
       basepoint_2_uuid: selectedPolygon2Value,
       weight: distance,
-      floor_number: currentFloor,
+      floor_number: floorNum,
     };
 
     const existingConnection = connections.find(
@@ -131,7 +131,7 @@ export default function ConnectionComponent({floorNum}) {
     const filtered = connections.filter((connection) => {
       const polygon1Name = polygonNameMap[connection.basepoint_1_uuid] || '';
       const polygon2Name = polygonNameMap[connection.basepoint_2_uuid] || '';
-      
+
       return polygon1Name.includes(searchConnection) || polygon2Name.includes(searchConnection);
     });
     setFilteredConnections(filtered);
