@@ -6,6 +6,21 @@
   flex-direction: column;
   align-items: flex-start;
 
+  &__name-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+
+    &:focus {
+      border-color: #4CAF50;
+      outline: none;
+    }
+  }
+
   &__element {
     display: flex;
     background-color: white;
@@ -58,6 +73,35 @@
           border-color: #000;
           opacity: 0.8;
         }
+      }
+    }
+  }
+
+  &__btn {
+    padding: 10px 20px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &--add {
+      background-color: #4CAF50;
+      color: white;
+
+      &:hover {
+        background-color: #45a049;
+      }
+    }
+
+    &--save {
+      background-color: #008CBA;
+      color: white;
+      margin-left: 10px;
+
+      &:hover {
+        background-color: #007399;
       }
     }
   }

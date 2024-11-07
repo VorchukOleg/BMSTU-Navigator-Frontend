@@ -19,8 +19,21 @@ import PolygonSettings from './components/admin-page/polygon-settings.jsx';
 import FindCoordinates from './components/admin-page/find-coordinates.jsx';
 import ajax from './modules/ajax.js';
 import { API_ROUTES } from './config.js';
+import { useOutletContext } from 'react-router-dom';
 
 ajax.initialize(API_ROUTES);
+
+function ConnectionWrapper() {
+  const context = useOutletContext();
+  const floorNum = context ? context.floorNum : null;
+
+  if (floorNum === null) {
+    return <div>Loading...</div>; // или любой другой компонент загрузки
+  }
+
+  return <ConnectionComponent floorNum={floorNum} />;
+}
+
 
 const router = createBrowserRouter([
   {
@@ -57,7 +70,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'connection',
-        element: <ConnectionComponent />
+        element: <ConnectionWrapper />
       },
       {
         path: 'settings',

@@ -49,7 +49,7 @@ export default function AdminPage() {
     {
       '/admin/editing':'Редактирование',
       '/admin/markup': 'Разметка',
-      '/admin/connection': 'Связывание Технические работы',
+      '/admin/connection': 'Связывание',
       '/admin/settings': 'Настройки полигона',
     };
 
@@ -62,6 +62,11 @@ export default function AdminPage() {
 
   const [isVisibleRoute, setIsVisibleRoute] = useState(false);
   const [isVisibleBuilding, setIsVisibleBuilding] = useState(false);
+  const [selectedPolygon, setSelectedPolygon] = useState(null);
+
+  const handlePolygonSelect = (polygon) => {
+    setSelectedPolygon(polygon);
+  };
 
   const toggleVisibilityRoute = () => {
     setIsVisibleRoute(!isVisibleRoute);
@@ -85,7 +90,7 @@ export default function AdminPage() {
       <div className='admin-page__left-section'>
         <div className='building-plug'>
         </div>
-        <Outlet />
+        <Outlet context={{ floorNum, selectedPolygon }} />
       </div>
       <div className='admin-page__right-section'>
         <div className='routes-dropdown'>
@@ -127,7 +132,7 @@ export default function AdminPage() {
           )}
         </div>
         <FloorNavigation floors={floors} buildLink={buildFloorLink} />
-        <PolygonsList currentFloor={floorNum} />
+        <PolygonsList currentFloor={floorNum} onPolygonSelect={handlePolygonSelect} />
       </div>
     </div>
   );
