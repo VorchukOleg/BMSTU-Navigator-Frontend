@@ -126,43 +126,35 @@ export default function ConnectionComponent({floorNum}) {
     }, {});
   }, [filteredPolygonOptions]);
 
-  useEffect(() => {
-    // Фильтрация связей на основе текста поиска
-    const filtered = connections.filter((connection) => {
-      const polygon1Name = polygonNameMap[connection.basepoint_1_uuid] || '';
-      const polygon2Name = polygonNameMap[connection.basepoint_2_uuid] || '';
 
-      return polygon1Name.includes(searchConnection) || polygon2Name.includes(searchConnection);
-    });
-    setFilteredConnections(filtered);
-  }, [connections, searchConnection, polygonNameMap]);
+  useEffect(() => {
+    // Загрузка сохраненных связей при монтировании компонента
+    const savedConnections = localStorage.getItem(`floor_${floorNum}_connections`);
+    if (savedConnections) {
+      setConnections(JSON.parse(savedConnections));
+    }
+  }, [floorNum]);
 
   const handleSaveConnections = () => {
     const currentFloorProperties = BUILDING_PROPERITES[floorNum];
 
     if (!currentFloorProperties) {
       setErrorMessage('Нет данных для текущего этажа.');
+
       return;
     }
 
-    // Убедитесь, что connections инициализированы
+    // Сохраняем связи в localStorage
+    localStorage.setItem(`floor_${floorNum}_connections`, JSON.stringify(connections));
+
+    // Обновляем connections в BUILDING_PROPERITES
     if (!currentFloorProperties.connections) {
       currentFloorProperties.connections = [];
     }
+      // Заменяем существующие связи на новые
+    currentFloorProperties.connections = [...connections];
 
-    // Добавляем новые связи к существующим
-    currentFloorProperties.connections = [
-      ...currentFloorProperties.connections,
-      ...connections,
-    ];
-
-    // Создаем строку для алерта с информацией о всех локально созданных связях
-    const connectionsAlert = connections.map(connection => 
-      `UUID: ${connection.uuid}, Полигон 1: ${polygonNameMap[connection.basepoint_1_uuid]}, Полигон 2: ${polygonNameMap[connection.basepoint_2_uuid]}, Вес: ${connection.weight}, Этаж: ${connection.floor_number}`
-    ).join('\n');
-
-    // Уведомление о сохранении и вывод всех созданных связей
-    alert(`Связи успешно сохранены!\n\nСозданные связи:\n${connectionsAlert}`);
+    alert(`Связи для этажа ${floorNum} сохранены в localStorage и BUILDING_PROPERITES`);
     setErrorMessage('');
   };
 
@@ -210,13 +202,6 @@ export default function ConnectionComponent({floorNum}) {
               </select>
             </div>
             <div className="dropdown">
-              <input
-                type="text"
-                className="dropdown__search-bar"
-                placeholder="Поиск связи"
-                value={searchConnection}
-                onChange={handleSearchChange}
-              />
             </div>
           </div>
           {errorMessage && (
@@ -231,6 +216,13 @@ export default function ConnectionComponent({floorNum}) {
         </div>
       </div>
       <div className="connection-component__list">
+      <input
+                type="text"
+                className="dropdown__search-bar"
+                placeholder="Поиск связи"
+                value={searchConnection}
+                onChange={handleSearchChange}
+              />
         <ConnectionListComponent connections={filteredConnections} polygonOptions={filteredPolygonOptions} />
       </div>
     </div>
