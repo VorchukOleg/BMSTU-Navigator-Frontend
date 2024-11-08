@@ -5,10 +5,6 @@ import styles from '../../styles/connection-list-component.scss';
 //на uuid этих полигонов. В целом не критично, так как человек будет
 //работать за раз с одним этажом
 
-//перенести поиск связей
-
-//поиск в дропдауне
-
 //сохранять изменения в билд пропертис
 //исключения
 export default function ConnectionListComponent({ connections, polygonOptions }) {
