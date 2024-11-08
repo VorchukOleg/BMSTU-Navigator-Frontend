@@ -3,6 +3,7 @@ import ConnectionListComponent from './connection-list-component.jsx';
 import styles from '../../styles/connection-component.scss';
 import { BUILDING_PROPERITES } from '../../routes/admin-page.jsx';
 import { v4 as uuidv4 } from 'uuid';
+import CustomDropdown from '../shared/custom-dropdown.jsx';
 
 export default function ConnectionComponent({floorNum}) {
   const [connections, setConnections] = useState([]);
@@ -13,8 +14,9 @@ export default function ConnectionComponent({floorNum}) {
   const [filteredConnections, setFilteredConnections] = useState([]);
   const [filteredPolygonOptions, setFilteredPolygonOptions] = useState([]);
 
-  const selectedPolygon1Ref = React.createRef();
-  const selectedPolygon2Ref = React.createRef();
+  // Состояния для выбранных полигонов
+  const [selectedPolygon1, setSelectedPolygon1] = useState(null);
+  const [selectedPolygon2, setSelectedPolygon2] = useState(null);
 
   useEffect(() => {
     const currentFloorProperties = BUILDING_PROPERITES[floorNum];
@@ -51,21 +53,18 @@ export default function ConnectionComponent({floorNum}) {
   };
 
   const handleCreateLink = () => {
-    const selectedPolygon1Value = selectedPolygon1Ref.current.value;
-    const selectedPolygon2Value = selectedPolygon2Ref.current.value;
-
-    if (!selectedPolygon1Value || !selectedPolygon2Value) {
+    if (!selectedPolygon1 || !selectedPolygon2) {
       setErrorMessage('Пожалуйста, выберите оба полигона.');
       return;
     }
 
-    if (selectedPolygon1Value === selectedPolygon2Value) {
+    if (selectedPolygon1 === selectedPolygon2) {
       setErrorMessage('Пожалуйста, выберите разные полигоны для создания связи.');
       return;
     }
 
-    const polygon1 = filteredPolygonOptions.find(option => option.value === selectedPolygon1Value);
-    const polygon2 = filteredPolygonOptions.find(option => option.value === selectedPolygon2Value);
+    const polygon1 = filteredPolygonOptions.find(option => option.value === selectedPolygon1);
+    const polygon2 = filteredPolygonOptions.find(option => option.value === selectedPolygon2);
 
     if (!polygon1 || !polygon2) {
       setErrorMessage('Не удалось найти выбранные полигоны.');
@@ -78,18 +77,18 @@ export default function ConnectionComponent({floorNum}) {
 
     const newConnection = {
       uuid: uuidv4(),
-      basepoint_1_uuid: selectedPolygon1Value,
-      basepoint_2_uuid: selectedPolygon2Value,
+      basepoint_1_uuid: selectedPolygon1,
+      basepoint_2_uuid: selectedPolygon2,
       weight: distance,
       floor_number: floorNum,
     };
 
     const existingConnection = connections.find(
       (connection) =>
-        (connection.basepoint_1_uuid === selectedPolygon1Value &&
-          connection.basepoint_2_uuid === selectedPolygon2Value) ||
-        (connection.basepoint_1_uuid === selectedPolygon2Value &&
-          connection.basepoint_2_uuid === selectedPolygon1Value)
+        (connection.basepoint_1_uuid === selectedPolygon1 &&
+          connection.basepoint_2_uuid === selectedPolygon2) ||
+        (connection.basepoint_1_uuid === selectedPolygon2 &&
+          connection.basepoint_2_uuid === selectedPolygon1)
     );
 
     if (existingConnection) {
@@ -103,9 +102,9 @@ export default function ConnectionComponent({floorNum}) {
     // Alert с информацией о созданной связи
     alert(`Создана связь:\n${JSON.stringify(newConnection, null, 2)}`);
 
-    // Сброс значений в выпадающих списках
-    selectedPolygon1Ref.current.selectedIndex = 0;
-    selectedPolygon2Ref.current.selectedIndex = 0;
+    // Сброс выбранных полигонов
+    setSelectedPolygon1(null);
+    setSelectedPolygon2(null);
   };
 
   const handleSearchChange = (event) => {
@@ -119,6 +118,7 @@ export default function ConnectionComponent({floorNum}) {
     }
   };
 
+
   const polygonNameMap = React.useMemo(() => {
     return filteredPolygonOptions.reduce((acc, option) => {
       acc[option.value] = option.label.toLowerCase();
@@ -127,15 +127,12 @@ export default function ConnectionComponent({floorNum}) {
   }, [filteredPolygonOptions]);
 
   useEffect(() => {
-    // Фильтрация связей на основе текста поиска
-    const filtered = connections.filter((connection) => {
-      const polygon1Name = polygonNameMap[connection.basepoint_1_uuid] || '';
-      const polygon2Name = polygonNameMap[connection.basepoint_2_uuid] || '';
-
-      return polygon1Name.includes(searchConnection) || polygon2Name.includes(searchConnection);
-    });
-    setFilteredConnections(filtered);
-  }, [connections, searchConnection, polygonNameMap]);
+    // Загрузка сохраненных связей при монтировании компонента
+    const savedConnections = localStorage.getItem(`floor_${floorNum}_connections`);
+    if (savedConnections) {
+      setConnections(JSON.parse(savedConnections));
+    }
+  }, [floorNum]);
 
   const handleSaveConnections = () => {
     const currentFloorProperties = BUILDING_PROPERITES[floorNum];
@@ -145,26 +142,33 @@ export default function ConnectionComponent({floorNum}) {
       return;
     }
 
-    // Убедитесь, что connections инициализированы
+    // Сохраняем связи в localStorage
+    localStorage.setItem(`floor_${floorNum}_connections`, JSON.stringify(connections));
+
+    // Обновляем connections в BUILDING_PROPERITES
     if (!currentFloorProperties.connections) {
       currentFloorProperties.connections = [];
     }
+    // Заменяем существующие связи на новые
+    currentFloorProperties.connections = [...connections];
 
-    // Добавляем новые связи к существующим
-    currentFloorProperties.connections = [
-      ...currentFloorProperties.connections,
-      ...connections,
-    ];
-
-    // Создаем строку для алерта с информацией о всех локально созданных связях
-    const connectionsAlert = connections.map(connection => 
-      `UUID: ${connection.uuid}, Полигон 1: ${polygonNameMap[connection.basepoint_1_uuid]}, Полигон 2: ${polygonNameMap[connection.basepoint_2_uuid]}, Вес: ${connection.weight}, Этаж: ${connection.floor_number}`
-    ).join('\n');
-
-    // Уведомление о сохранении и вывод всех созданных связей
-    alert(`Связи успешно сохранены!\n\nСозданные связи:\n${connectionsAlert}`);
+    alert(`Связи для этажа ${floorNum} сохранены в localStorage и BUILDING_PROPERITES`);
     setErrorMessage('');
   };
+
+  useEffect(() => {
+    const filtered = connections.filter((connection) => {
+      const polygon1Name = polygonNameMap[connection.basepoint_1_uuid] || connection.basepoint_1_uuid;
+      const polygon2Name = polygonNameMap[connection.basepoint_2_uuid] || connection.basepoint_2_uuid;
+
+      return (
+        polygon1Name.toLowerCase().includes(searchConnection.toLowerCase()) ||
+        polygon2Name.toLowerCase().includes(searchConnection.toLowerCase())
+      );
+    });
+
+    setFilteredConnections(filtered);
+  }, [connections, searchConnection, polygonNameMap]);
 
   return (
     <div className="connection-component">
@@ -172,50 +176,23 @@ export default function ConnectionComponent({floorNum}) {
         <div className="connection-window">
           <div className="dropdown-container">
             <div className="dropdown">
-              <input
-                type="text"
-                className="dropdown__search-bar"
-                placeholder="Поиск полигона 1"
-                value={searchPolygon1}
-                onChange={handleSearchChange}
-              />
-              <select ref={selectedPolygon1Ref} className="dropdown__btn">
-                <option value="">Выберите полигон 1</option>
-                {filteredPolygonOptions.filter((option) =>
+              <CustomDropdown
+                options={filteredPolygonOptions.filter((option) =>
                   option.label.toLowerCase().includes(searchPolygon1.toLowerCase())
-                ).map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="dropdown">
-              <input
-                type="text"
-                className="dropdown__search-bar"
-                placeholder="Поиск полигона 2"
-                value={searchPolygon2}
-                onChange={handleSearchChange}
+                )}
+                selectedValue={selectedPolygon1}
+                onSelect={setSelectedPolygon1}
+                placeholder="Выберите полигон 1"
               />
-              <select ref={selectedPolygon2Ref} className="dropdown__btn">
-                <option value="">Выберите полигон 2</option>
-                {filteredPolygonOptions.filter((option) =>
-                  option.label.toLowerCase().includes(searchPolygon2.toLowerCase())
-                ).map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
             </div>
             <div className="dropdown">
-              <input
-                type="text"
-                className="dropdown__search-bar"
-                placeholder="Поиск связи"
-                value={searchConnection}
-                onChange={handleSearchChange}
+              <CustomDropdown
+                options={filteredPolygonOptions.filter((option) =>
+                  option.label.toLowerCase().includes(searchPolygon2.toLowerCase())
+                )}
+                selectedValue={selectedPolygon2}
+                onSelect={setSelectedPolygon2}
+                placeholder="Выберите полигон 2"
               />
             </div>
           </div>
@@ -231,7 +208,17 @@ export default function ConnectionComponent({floorNum}) {
         </div>
       </div>
       <div className="connection-component__list">
-        <ConnectionListComponent connections={filteredConnections} polygonOptions={filteredPolygonOptions} />
+        <input
+          type="text"
+          className="dropdown__search-bar"
+          placeholder="Поиск связи"
+          value={searchConnection}
+          onChange={handleSearchChange}
+        />
+        <ConnectionListComponent
+          connections={filteredConnections}
+          polygonOptions={filteredPolygonOptions}
+        />
       </div>
     </div>
   );

@@ -4,6 +4,9 @@ import styles from '../../styles/connection-list-component.scss';
 //проблема: при переключении этажа названия полигонов в списке меняются
 //на uuid этих полигонов. В целом не критично, так как человек будет
 //работать за раз с одним этажом
+
+//сохранять изменения в билд пропертис
+//исключения
 export default function ConnectionListComponent({ connections, polygonOptions }) {
   const polygonNameMap = polygonOptions.reduce((acc, option) => {
     acc[option.value] = option.label;
