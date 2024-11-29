@@ -1,0 +1,30 @@
+.settings-container {
+  display: flex;
+  justify-content: space-between;
+
+  &__dropdown {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__polygon-type {
+    width: 35%;
+
+    &--btn {
+      width: 280px;
+    }
+  }
+
+  &__polygon-name {
+    width: 30%;
+  }
+
+  &__polygon-title {
+    width: 35%;
+
+    &--btn {
+      width: 200px;
+    }
+  }
+}

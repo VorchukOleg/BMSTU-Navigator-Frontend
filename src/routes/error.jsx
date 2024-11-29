@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function ErrorPage() {
-  const buttonBackClass = `
+const buttonBackClass = `
   rounded-md 
   bg-indigo-600 
   px-3.5 py-2.5 
@@ -15,8 +14,9 @@ export default function ErrorPage() {
   focus-visible:outline-2 
   focus-visible:outline-offset-2 
   focus-visible:outline-indigo-600
-  `;
+`;
 
+export default function ErrorPage() {
   return (
     <main className="grid min-h-full place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8">
       <div className="text-center">

@@ -11,7 +11,6 @@ class Ajax {
    * @param {*} routes
    */
   initialize(auth, routes) {
-    this.auth = auth;
     this.routes = routes;
   }
 
@@ -25,27 +24,8 @@ class Ajax {
     const init = {
       method: POST,
       mode: 'cors',
-      credentials: 'include',
       cache: 'default',
       body: JSON.stringify(body),
-    };
-
-    await this.#ajax(url, callback, init);
-  }
-
-  /**
-   * Make a POST request with multipart/form-data.
-   * @param {URL} url - The request path.
-   * @param {FormData} body - The request body.
-   * @param {Function} callback - The callback function.
-   */
-  async postMultipart(url, body, callback) {
-    const init = {
-      method: POST,
-      mode: 'cors',
-      credentials: 'include',
-      cache: 'default',
-      body: body,
     };
 
     await this.#ajax(url, callback, init);
@@ -61,7 +41,6 @@ class Ajax {
     const init = {
       method: GET,
       mode: 'cors',
-      credentials: 'include',
       cache: 'default',
     };
 

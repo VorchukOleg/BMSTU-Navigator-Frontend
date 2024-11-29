@@ -1,0 +1,58 @@
+.connection-list-component {
+  width: 70%;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  overflow-y: auto;
+  max-height: 250px;
+  position: relative;
+}
+
+.connection-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.connection-list li {
+  padding: 10px 15px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  word-break: break-all;
+}
+
+.empty-message {
+  color: #ccc;
+  text-align: center;
+}
+
+.scrollbar-container {
+  width: 10px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: #DEE7FF;
+  opacity: 0.5;
+  transition: opacity 0.3s ease;
+}
+
+.connection-list-component:hover .scrollbar-container {
+  opacity: 1;
+}
+
+.scrollbar {
+  height: 50%;
+  background-color: #DEE7FF;
+  border-radius: 2px;
+  cursor: pointer;
+  position: absolute;
+  bottom: 0;
+}
